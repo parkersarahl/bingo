@@ -81,20 +81,17 @@
     #endScreen button:hover {
       background: #2563eb;
     }
+    #answerButtons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px 0;
+    }
 
     .success { color: #2E7D32; }
     .error { color: #D32F2F; }
     .info { color: #1976D2; }
-
-    input {
-      padding: 10px;
-      font-size: 18px;
-      width: 150px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      text-align: center;
-      margin: 10px 0;
-    }
 
     button.submit-btn {
       margin-top: 10px;
@@ -121,7 +118,7 @@
   <div id="board" class="board"></div>
 
   <h2 id="question">Question:</h2>
-  <input id="answer" type="number" placeholder="Your answer" />
+  <div id="answerButtons"></div>
   <br>
   <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
 
@@ -200,17 +197,133 @@
         answerInput.value = "";
         showMessage("", "info");
     }
+    const answerButtonsEl = document.getElementById("answerButtons");
 
+function newQuestion() {
+  if (currentEquationIndex >= allEquations.length) {
+    endGame("No more questions — Game Over!");
+    return;
+  }
 
-    function checkAnswer() {
-      const userAns = parseInt(answerInput.value);
-      if (isNaN(userAns)) {
-        showMessage("⚠️ Please enter a number", "error");
-        return;
-      }
-      if (userAns === answer) {
+  const eq = allEquations[currentEquationIndex];
+  answer = eq.answer;
+  questionEl.textContent = `What is ${eq.a} + ${eq.b}?`;
+  showMessage("", "info");
+
+  // Generate buttons
+  answerButtonsEl.innerHTML = ""; // clear old buttons
+  let options = [answer];
+  
+  // Generate 3 random incorrect answers
+  while (options.length < 4) {
+    let rand = Math.floor(Math.random() * 16); // e.g., 0-15
+    if (!options.includes(rand)) options.push(rand);
+  }
+
+  // Shuffle options
+  options = options.sort(() => Math.random() - 0.5);
+
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.className = "cell"; // reuse cell styling
+    btn.style.width = "60px";
+    btn.style.height = "60px";
+    btn.addEventListener("click", () => checkAnswer(opt));
+    answerButtonsEl.appendChild(btn);
+  });
+}
+
+    function checkAnswer(selectedAnswer) {
+      if (selectedAnswer === answer) {
         let available = [];
         for (let i = 0; i < 5; i++) {
+          for (let j = 0; j < 5; j++) {
+            if (boardNumbers[i][j] === answer && !marks[i][j] && !(i === 2 && j === 2)) {
+              available.push([i, j]);
+            }
+          }
+        }
+        if (available.length > 0) {
+          showMessage("✅ Correct! Click a highlighted cell.", "success");
+          available.forEach(([i, j]) => buttons[i][j].classList.add("highlight"));
+        } else {
+          showMessage("ℹ️ Correct, but number not on board. Skipping...", "info");
+          currentEquationIndex++;
+          newQuestion();
+        }
+      } else {
+        showMessage("❌ Wrong! Try again.", "error");
+      }
+    }
+
+    function markCell(i, j) {
+      if (buttons[i][j].classList.contains("highlight")) {
+        marks[i][j] = true;
+        buttons[i][j].classList.remove("highlight");
+        buttons[i][j].classList.add("marked");
+        clearHighlights();
+        if (checkWin()) {
+          celebrateWin();
+        } else {
+          currentEquationIndex++;
+          newQuestion();
+        }
+      }
+    }
+
+    function clearHighlights() {
+      for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+          buttons[i][j].classList.remove("highlight");
+        }
+      }
+    }
+
+    function checkWin() {
+      for (let row of marks) {
+        if (row.every(x => x)) return true;
+      }
+      for (let col = 0; col < 5; col++) {
+        if (marks.every(row => row[col])) return true;
+      }
+      if ([0,1,2,3,4].every(i => marks[i][i])) return true;
+      if ([0,1,2,3,4].every(i => marks[i][4 - i])) return true;
+      return false;
+    }
+
+    function celebrateWin() {
+      confetti({
+        particleCount: 200,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+      endGame("🎉 BINGO! You win! 🎉");
+    }
+
+    function endGame(message) {
+        document.getElementById("endMessage").textContent = message;
+        document.getElementById("endScreen").style.display = "block";
+        answerInput.disabled = true;
+}
+
+    function playAgain() {
+        location.reload(); // reloads this version
+}
+
+function goHome() {
+  window.location.href = "index.html"; // back to homepage
+}
+
+
+    // Init
+    createBoard();
+    generateEquations();
+    newQuestion();
+  </script>
+</body>
+</html>
+
           for (let j = 0; j < 5; j++) {
             if (boardNumbers[i][j] === answer && !marks[i][j] && !(i === 2 && j === 2)) {
               available.push([i, j]);

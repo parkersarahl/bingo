@@ -49,12 +49,7 @@
       background: #FFD93D !important;
     }
 
-    .marked {
-      background: #6BCB77 !important;
-      color: white;
-    }
-
-    .free {
+    .marked, .free {
       background: #6BCB77 !important;
       color: white;
     }
@@ -63,6 +58,17 @@
       font-size: 1.4rem;
       margin: 10px 0;
     }
+
+    #message {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      min-height: 24px;
+      font-weight: bold;
+    }
+
+    .success { color: #2E7D32; }
+    .error { color: #D32F2F; }
+    .info { color: #1976D2; }
 
     input {
       padding: 10px;
@@ -103,6 +109,8 @@
   <br>
   <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
 
+  <div id="message"></div>
+
   <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -118,15 +126,16 @@
     const boardEl = document.getElementById("board");
     const questionEl = document.getElementById("question");
     const answerInput = document.getElementById("answer");
+    const messageEl = document.getElementById("message");
 
     let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
     let buttons = [];
+    let a = 3, answer;
 
-    // Equation state
-    let a = 3;
-    let allEquations = [];
-    let currentEquationIndex = 0;
-    let answer;
+    function showMessage(text, type="info") {
+      messageEl.textContent = text;
+      messageEl.className = type;
+    }
 
     function createBoard() {
       boardEl.innerHTML = "";
@@ -141,28 +150,26 @@
           buttons[i][j] = btn;
         }
       }
-      // Free space
       marks[2][2] = true;
       buttons[2][2].classList.add("free");
     }
+
+    let allEquations = [];
+    let currentEquationIndex = 0;
 
     function generateEquations() {
       allEquations = [];
       for (let b = 0; b <= 12; b++) {
         allEquations.push({ a, b, answer: a + b });
       }
-      // Shuffle
       allEquations = allEquations.sort(() => Math.random() - 0.5);
       currentEquationIndex = 0;
     }
 
     function newQuestion() {
       if (currentEquationIndex >= allEquations.length) {
-        if (!checkWin()) {
-          questionEl.textContent = "😢 Out of questions. Game over!";
-        } else {
-          questionEl.textContent = "🎉 You won before questions ran out!";
-        }
+        questionEl.textContent = "🎉 No more questions!";
+        showMessage("Game over! No more equations left.", "info");
         answerInput.disabled = true;
         return;
       }
@@ -170,12 +177,13 @@
       answer = eq.answer;
       questionEl.textContent = `What is ${eq.a} + ${eq.b}?`;
       answerInput.value = "";
+      showMessage("", "info");
     }
 
     function checkAnswer() {
       const userAns = parseInt(answerInput.value);
       if (isNaN(userAns)) {
-        alert("Please enter a number");
+        showMessage("⚠️ Please enter a number", "error");
         return;
       }
       if (userAns === answer) {
@@ -188,15 +196,15 @@
           }
         }
         if (available.length > 0) {
-          alert("✅ Correct! Click a highlighted cell.");
+          showMessage("✅ Correct! Click a highlighted cell.", "success");
           available.forEach(([i, j]) => buttons[i][j].classList.add("highlight"));
         } else {
-          alert("Correct, but number not on board. Skipping...");
+          showMessage("ℹ️ Correct, but number not on board. Skipping...", "info");
           currentEquationIndex++;
           newQuestion();
         }
       } else {
-        alert("❌ Wrong! Try again.");
+        showMessage("❌ Wrong! Try again.", "error");
       }
     }
 
@@ -224,22 +232,19 @@
     }
 
     function checkWin() {
-      // Rows
       for (let row of marks) {
         if (row.every(x => x)) return true;
       }
-      // Columns
       for (let col = 0; col < 5; col++) {
         if (marks.every(row => row[col])) return true;
       }
-      // Diagonals
       if ([0,1,2,3,4].every(i => marks[i][i])) return true;
       if ([0,1,2,3,4].every(i => marks[i][4 - i])) return true;
       return false;
     }
 
     function celebrateWin() {
-      alert("🎉 BINGO! You win! 🎉");
+      showMessage("🎉 BINGO! You win! 🎉", "success");
       confetti({
         particleCount: 200,
         spread: 70,

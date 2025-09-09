@@ -251,18 +251,18 @@
     }
 
     function celebrateWin() {
-      showMessage("🎉 BINGO! You win! 🎉", "success");
       confetti({
         particleCount: 200,
         spread: 70,
         origin: { y: 0.6 }
       });
+      endGame("🎉 BINGO! You win! 🎉");
     }
 
     function endGame(message) {
-  document.getElementById("endMessage").textContent = message;
-  document.getElementById("endScreen").style.display = "block";
-  answerInput.disabled = true;
+        document.getElementById("endMessage").textContent = message;
+        document.getElementById("endScreen").style.display = "block";
+        answerInput.disabled = true;
 }
 
     function playAgain() {

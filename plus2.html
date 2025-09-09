@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Plus 2 Bingo Game</title>
+  <title>Plus 3 Bingo Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -13,7 +14,7 @@
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       margin-bottom: 20px;
       color: #222;
       text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
@@ -21,28 +22,28 @@
 
     .board {
       display: grid;
-      grid-template-columns: repeat(5, 90px);
-      grid-gap: 10px;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 8px;
       justify-content: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .cell {
-      width: 90px;
-      height: 90px;
+      width: 60px;
+      height: 60px;
       border: none;
       border-radius: 12px;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: bold;
       cursor: pointer;
       background: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: all 0.2s ease;
     }
 
     .cell:hover {
       transform: scale(1.05);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+      box-shadow: 0 5px 8px rgba(0,0,0,0.15);
     }
 
     .highlight {
@@ -55,19 +56,20 @@
     }
 
     #question {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       margin: 10px 0;
     }
 
     #message {
-      font-size: 1.2rem;
+      font-size: 1rem;
       margin: 10px 0;
-      min-height: 24px;
+      min-height: 20px;
       font-weight: bold;
     }
+
     #endScreen button {
       padding: 10px 20px;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       background: #4D96FF;
       color: white;
@@ -82,48 +84,27 @@
       background: #2563eb;
     }
 
-    .success { color: #2E7D32; }
-    .error { color: #D32F2F; }
-    .info { color: #1976D2; }
-
-    input {
-      padding: 10px;
-      font-size: 18px;
-      width: 150px;
-      border: 2px solid #ccc;
-      border-radius: 8px;
-      text-align: center;
+    #answerButtons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
       margin: 10px 0;
     }
 
-    button.submit-btn {
-      margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-      background: #4D96FF;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-      transition: background 0.2s;
-    }
-
-    button.submit-btn:hover {
-      background: #2563eb;
-    }
+    .success { color: #2E7D32; }
+    .error { color: #D32F2F; }
+    .info { color: #1976D2; }
   </style>
 </head>
 <body>
 
-  <h1>🎉 Plus 3 Bingo 🎉</h1>
+  <h1>🎉 Plus 2 Bingo 🎉</h1>
 
   <div id="board" class="board"></div>
 
   <h2 id="question">Question:</h2>
-  <input id="answer" type="number" placeholder="Your answer" />
-  <br>
-  <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
+  <div id="answerButtons"></div>
 
   <div id="message"></div>
   
@@ -131,29 +112,30 @@
     <h2 id="endMessage"></h2>
     <button onclick="playAgain()">🔄 Play Again</button>
     <button onclick="goHome()">🏠 Return to Homepage</button>
-    </div>
-
+  </div>
 
   <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
     const boardNumbers = [
-      [11, 13, 13, 8, 12],
-      [4, 7, 12, 11, 8],
-      [14, 9, 0, 10, 7],
-      [14, 15, 5, 6, 5],
-      [10, 4, 9, 6, 3],
+      [11, 8, 12, 9, 11],
+      [6, 10, 1, 4, 10],
+      [12, 5, 0, 8, 2],
+      [7, 13, 7, 2, 3],
+      [4, 9, 3, 6, 1],
     ];
 
     const boardEl = document.getElementById("board");
     const questionEl = document.getElementById("question");
-    const answerInput = document.getElementById("answer");
+    const answerButtonsEl = document.getElementById("answerButtons");
     const messageEl = document.getElementById("message");
 
     let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
     let buttons = [];
     let a = 2, answer;
+    let allEquations = [];
+    let currentEquationIndex = 0;
 
     function showMessage(text, type="info") {
       messageEl.textContent = text;
@@ -177,38 +159,54 @@
       buttons[2][2].classList.add("free");
     }
 
-    let allEquations = [];
-    let currentEquationIndex = 0;
-
     function generateEquations() {
       allEquations = [];
-      for (let b = 0; b <= 10; b++) {
+      for (let b = 0; b <= 12; b++) {
         allEquations.push({ a, b, answer: a + b });
       }
-      allEquations = allEquations.sort(() => Math.random() - 0.5);
+      allEquations.sort(() => Math.random() - 0.5);
       currentEquationIndex = 0;
     }
 
     function newQuestion() {
-        if (currentEquationIndex >= allEquations.length) {
-            endGame("No more questions — Game Over!"); // <-- call endGame instead
-            return;
-        }
-        const eq = allEquations[currentEquationIndex];
-        answer = eq.answer;
-        questionEl.textContent = `What is ${eq.a} + ${eq.b}?`;
-        answerInput.value = "";
-        showMessage("", "info");
-    }
-
-
-    function checkAnswer() {
-      const userAns = parseInt(answerInput.value);
-      if (isNaN(userAns)) {
-        showMessage("⚠️ Please enter a number", "error");
+      if (currentEquationIndex >= allEquations.length) {
+        endGame("No more questions — Game Over!");
         return;
       }
+
+      const eq = allEquations[currentEquationIndex];
+      answer = eq.answer;
+      questionEl.textContent = `What is ${eq.a} + ${eq.b}?`;
+      showMessage("", "info");
+
+      // Create answer buttons
+      answerButtonsEl.innerHTML = "";
+      let options = [answer];
+
+      // Generate 3 random wrong answers
+      while (options.length < 4) {
+        let rand = Math.floor(Math.random() * 16);
+        if (!options.includes(rand)) options.push(rand);
+      }
+
+      // Shuffle
+      options.sort(() => Math.random() - 0.5);
+
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "cell";
+        btn.style.width = "60px";
+        btn.style.height = "60px";
+        btn.addEventListener("click", () => checkAnswer(opt));
+        answerButtonsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(userAns) {
       if (userAns === answer) {
+        showMessage("✅ Correct! Click a highlighted cell.", "success");
+
         let available = [];
         for (let i = 0; i < 5; i++) {
           for (let j = 0; j < 5; j++) {
@@ -217,8 +215,8 @@
             }
           }
         }
+
         if (available.length > 0) {
-          showMessage("✅ Correct! Click a highlighted cell.", "success");
           available.forEach(([i, j]) => buttons[i][j].classList.add("highlight"));
         } else {
           showMessage("ℹ️ Correct, but number not on board. Skipping...", "info");
@@ -236,9 +234,8 @@
         buttons[i][j].classList.remove("highlight");
         buttons[i][j].classList.add("marked");
         clearHighlights();
-        if (checkWin()) {
-          celebrateWin();
-        } else {
+        if (checkWin()) celebrateWin();
+        else {
           currentEquationIndex++;
           newQuestion();
         }
@@ -254,40 +251,26 @@
     }
 
     function checkWin() {
-      for (let row of marks) {
-        if (row.every(x => x)) return true;
-      }
-      for (let col = 0; col < 5; col++) {
-        if (marks.every(row => row[col])) return true;
-      }
+      for (let row of marks) if (row.every(x => x)) return true;
+      for (let col = 0; col < 5; col++) if (marks.every(row => row[col])) return true;
       if ([0,1,2,3,4].every(i => marks[i][i])) return true;
       if ([0,1,2,3,4].every(i => marks[i][4 - i])) return true;
       return false;
     }
 
     function celebrateWin() {
-      confetti({
-        particleCount: 200,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
       endGame("🎉 BINGO! You win! 🎉");
     }
 
     function endGame(message) {
-        document.getElementById("endMessage").textContent = message;
-        document.getElementById("endScreen").style.display = "block";
-        answerInput.disabled = true;
-}
+      document.getElementById("endMessage").textContent = message;
+      document.getElementById("endScreen").style.display = "block";
+      answerButtonsEl.innerHTML = "";
+    }
 
-    function playAgain() {
-        location.reload(); // reloads this version
-}
-
-function goHome() {
-  window.location.href = "index.html"; // back to homepage
-}
-
+    function playAgain() { location.reload(); }
+    function goHome() { window.location.href = "index.html"; }
 
     // Init
     createBoard();

@@ -110,6 +110,13 @@
   <button class="submit-btn" onclick="checkAnswer()">Submit Answer</button>
 
   <div id="message"></div>
+  
+  <div id="endScreen" style="display:none; margin-top:20px;">
+    <h2 id="endMessage"></h2>
+    <button onclick="playAgain()">🔄 Play Again</button>
+    <button onclick="goHome()">🏠 Return to Homepage</button>
+    </div>
+
 
   <!-- Confetti library -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -251,6 +258,21 @@
         origin: { y: 0.6 }
       });
     }
+
+    function endGame(message) {
+  document.getElementById("endMessage").textContent = message;
+  document.getElementById("endScreen").style.display = "block";
+  answerInput.disabled = true;
+}
+
+    function playAgain() {
+        location.reload(); // reloads this version
+}
+
+function goHome() {
+  window.location.href = "index.html"; // back to homepage
+}
+
 
     // Init
     createBoard();

@@ -34,15 +34,27 @@
     .menu button:hover {
       background: #2563eb;
     }
+    .version-btn::before {
+      content: "+";
+      color: #FFD93D;
+      font-weight: bold;
+      font-size: 1.5em;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
   </style>
 </head>
 <body>
   <h1>🎉 Welcome to Math Bingo 🎉</h1>
   <p>Select your version:</p>
   <div class="menu">
-    <button onclick="location.href='plus2.html'">➕2 Bingo</button>
-    <button onclick="location.href='plus3.html'">➕3 Bingo</button>
-    <button onclick="location.href='plus5.html'">➕5 Bingo</button>
+    <button class="version-btn" onclick="location.href='plus0.html'">0 Bingo</button>
+    <button class="version-btn" onclick="location.href='plus1.html'">1 Bingo</button>
+    <button class="version-btn" onclick="location.href='plus2.html'">2 Bingo</button>
+    <button class="version-btn" onclick="location.href='plus3.html'">3 Bingo</button>
+    <button class="version-btn" onclick="location.href='plus4.html'">4 Bingo</button>
+    <button class="version-btn" onclick="location.href='plus5.html'">5 Bingo</button>
   </div>
 </body>
 </html>

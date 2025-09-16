@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Minus 1 Bingo Game</title>
+  <title>Minus 2 Bingo Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -99,7 +99,7 @@
 </head>
 <body>
 
-  <h1>🎉 Minus 1 Bingo 🎉</h1>
+  <h1>🎉 Minus 2 Bingo 🎉</h1>
 
   <div id="board" class="board"></div>
 
@@ -119,11 +119,11 @@
 
   <script>
     const boardNumbers = [
-      [11, 8, 2, 9, 11],
-      [6, 10, 1, 4, 10],
-      [0, 5, 0, 8, 2],
-      [7, 0, 7, 2, 3],
-      [4, 9, 3, 6, 1],
+      [11, 12, 3, 8, 12],
+      [4, 7, 2, 11, 8],
+      [2, 9, 0, 10, 7],
+      [1, 2, 5, 6, 5],
+      [10, 4, 9, 6, 3],
     ];
 
     const boardEl = document.getElementById("board");
@@ -133,7 +133,7 @@
 
     let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
     let buttons = [];
-    let a = 1, answer;
+    let a = 2, answer;
     let allEquations = [];
     let currentEquationIndex = 0;
 
@@ -161,7 +161,7 @@
 
     function generateEquations() {
       allEquations = [];
-      for (let b = 1; b <= 12; b++) {
+      for (let b = 2; b <= 14; b++) {
         allEquations.push({ a, b, answer: b - a });
       }
       allEquations.sort(() => Math.random() - 0.5);

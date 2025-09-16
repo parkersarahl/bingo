@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Plus 1 Bingo Game</title>
+  <title>Minus 1 Bingo Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -99,7 +99,7 @@
 </head>
 <body>
 
-  <h1>🎉 Plus 1 Bingo 🎉</h1>
+  <h1>🎉 Minus 1 Bingo 🎉</h1>
 
   <div id="board" class="board"></div>
 
@@ -122,7 +122,7 @@
       [11, 8, 12, 9, 11],
       [6, 10, 1, 4, 10],
       [12, 5, 0, 8, 2],
-      [7, 13, 7, 2, 3],
+      [7, 5, 7, 2, 3],
       [4, 9, 3, 6, 1],
     ];
 
@@ -133,7 +133,7 @@
 
     let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
     let buttons = [];
-    let a = 1, answer;
+    let a = 4, answer;
     let allEquations = [];
     let currentEquationIndex = 0;
 
@@ -161,8 +161,8 @@
 
     function generateEquations() {
       allEquations = [];
-      for (let b = 1; b <= 13; b++) {
-        allEquations.push({ a, b, answer: a + b });
+      for (let b = 4; b <= 16; b++) {
+        allEquations.push({ a, b, answer: b - a });
       }
       allEquations.sort(() => Math.random() - 0.5);
       currentEquationIndex = 0;
@@ -176,7 +176,7 @@
 
       const eq = allEquations[currentEquationIndex];
       answer = eq.answer;
-      questionEl.textContent = `What is ${eq.a} + ${eq.b}?`;
+      questionEl.textContent = `What is ${eq.b} - ${eq.a}?`;
       showMessage("", "info");
 
       // Create answer buttons

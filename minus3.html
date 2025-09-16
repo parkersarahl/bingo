@@ -119,10 +119,10 @@
 
   <script>
     const boardNumbers = [
-      [11, 13, 13, 8, 12],
+      [11, 2, 0, 8, 12],
       [4, 7, 12, 11, 8],
-      [14, 9, 0, 10, 7],
-      [14, 15, 5, 6, 5],
+      [3, 9, 0, 10, 7],
+      [2, 1, 5, 6, 5],
       [10, 4, 9, 6, 3],
     ];
 
@@ -161,7 +161,7 @@
 
     function generateEquations() {
       allEquations = [];
-      for (let b = 3; b <= 16; b++) {
+      for (let b = 3; b <= 15; b++) {
         allEquations.push({ a, b, answer: b - a });
       }
       allEquations.sort(() => Math.random() - 0.5);

@@ -2,55 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Bingo Game Hub</title>
+  <title>Math Bingo</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
       text-align: center;
+      margin: 20px;
       background: linear-gradient(to right, #74ebd5, #ACB6E5);
-      padding: 50px;
-    }
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-    }
-    .menu {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .menu button {
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border: none;
-      border-radius: 10px;
-      background: #4D96FF;
-      color: white;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-      transition: background 0.2s;
-    }
-    .menu button:hover {
-      background: #2563eb;
-    }
-    .addition-btn::before {
-      content: "+";
-      color: #FFD93D;
-      font-weight: bold;
-      font-size: 1.5em;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    .minus-btn::before {
-      content: "-";
-      color: #FFD93D;
-      font-weight: bold;
-      font-size: 1.5em;
-      margin-right: 8px;
-      vertical-align: middle;
+      color: #333;
     }
 
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section p {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      width: 80px;
+      height: 80px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: white;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 8px rgba(0,0,0,0.15);
+    }
+
+    .addition-btn {
+      background: #6BCB77;
+      color: white;
+    }
+
+    .minus-btn {
+      background: #4D96FF;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -70,7 +86,7 @@
     </div>
 
     <!-- Subtraction Section -->
-    <div class="section" style="margin-top: 30px;">
+    <div class="section">
       <p>Subtraction</p>
       <div class="button-group">
         <button class="minus-btn" onclick="location.href='minus0.html'">0</button>
@@ -84,3 +100,6 @@
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
+
+
+

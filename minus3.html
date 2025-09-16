@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Minus 3 Bingo Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #222;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(5, 60px);
+      grid-gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .cell {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      background: white;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .cell:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 8px rgba(0,0,0,0.15);
+    }
+
+    .highlight {
+      background: #FFD93D !important;
+    }
+
+    .marked, .free {
+      background: #6BCB77 !important;
+      color: white;
+    }
+
+    #question {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+
+    #message {
+      font-size: 1rem;
+      margin: 10px 0;
+      min-height: 20px;
+      font-weight: bold;
+    }
+
+    #endScreen button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background: #4D96FF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin: 5px;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+      transition: background 0.2s;
+    }
+
+    #endScreen button:hover {
+      background: #2563eb;
+    }
+
+    #answerButtons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .success { color: #2E7D32; }
+    .error { color: #D32F2F; }
+    .info { color: #1976D2; }
+  </style>
+</head>
+<body>
+
+  <h1>🎉 Minus 3 Bingo 🎉</h1>
+
+  <div id="board" class="board"></div>
+
+  <h2 id="question">Question:</h2>
+  <div id="answerButtons"></div>
+
+  <div id="message"></div>
+  
+  <div id="endScreen" style="display:none; margin-top:20px;">
+    <h2 id="endMessage"></h2>
+    <button onclick="playAgain()">🔄 Play Again</button>
+    <button onclick="goHome()">🏠 Return to Homepage</button>
+  </div>
+
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    const boardNumbers = [
+      [11, 1, 2, 8, 12],
+      [3, 7, 2, 11, 8],
+      [1, 9, 0, 10, 7],
+      [4, 12, 5, 6, 5],
+      [10, 4, 9, 6, 3],
+    ];
+
+    const boardEl = document.getElementById("board");
+    const questionEl = document.getElementById("question");
+    const answerButtonsEl = document.getElementById("answerButtons");
+    const messageEl = document.getElementById("message");
+
+    let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
+    let buttons = [];
+    let a = 2, answer;
+    let allEquations = [];
+    let currentEquationIndex = 0;
+
+    function showMessage(text, type="info") {
+      messageEl.textContent = text;
+      messageEl.className = type;
+    }
+
+    function createBoard() {
+      boardEl.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        buttons[i] = [];
+        for (let j = 0; j < 5; j++) {
+          const btn = document.createElement("button");
+          btn.className = "cell";
+          btn.textContent = (i === 2 && j === 2) ? "FREE" : boardNumbers[i][j];
+          btn.addEventListener("click", () => markCell(i, j));
+          boardEl.appendChild(btn);
+          buttons[i][j] = btn;
+        }
+      }
+      marks[2][2] = true;
+      buttons[2][2].classList.add("free");
+    }
+
+    function generateEquations() {
+      allEquations = [];
+      for (let b = 2; b <= 14; b++) {
+        allEquations.push({ a, b, answer: b - a });
+      }
+      allEquations.sort(() => Math.random() - 0.5);
+      currentEquationIndex = 0;
+    }
+
+    function newQuestion() {
+      if (currentEquationIndex >= allEquations.length) {
+        endGame("No more questions — Game Over!");
+        return;
+      }
+
+      const eq = allEquations[currentEquationIndex];
+      answer = eq.answer;
+      questionEl.textContent = `What is ${eq.b} - ${eq.a}?`;
+      showMessage("", "info");
+
+      // Create answer buttons
+      answerButtonsEl.innerHTML = "";
+      let options = [answer];
+
+      // Generate 3 random wrong answers
+      while (options.length < 4) {
+        let rand = Math.floor(Math.random() * 16);
+        if (!options.includes(rand)) options.push(rand);
+      }
+
+      // Shuffle
+      options.sort(() => Math.random() - 0.5);
+
+      options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "cell";
+        btn.style.width = "60px";
+        btn.style.height = "60px";
+        btn.addEventListener("click", () => checkAnswer(opt));
+        answerButtonsEl.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(userAns) {
+      if (userAns === answer) {
+        showMessage("✅ Correct! Click a highlighted cell.", "success");
+
+        let available = [];
+        for (let i = 0; i < 5; i++) {
+          for (let j = 0; j < 5; j++) {
+            if (boardNumbers[i][j] === answer && !marks[i][j] && !(i === 2 && j === 2)) {
+              available.push([i, j]);
+            }
+          }
+        }
+
+        if (available.length > 0) {
+          available.forEach(([i, j]) => buttons[i][j].classList.add("highlight"));
+        } else {
+          showMessage("ℹ️ Correct, but number not on board. Skipping...", "info");
+          currentEquationIndex++;
+          newQuestion();
+        }
+      } else {
+        showMessage("❌ Wrong! Try again.", "error");
+      }
+    }
+
+    function markCell(i, j) {
+      if (buttons[i][j].classList.contains("highlight")) {
+        marks[i][j] = true;
+        buttons[i][j].classList.remove("highlight");
+        buttons[i][j].classList.add("marked");
+        clearHighlights();
+        if (checkWin()) celebrateWin();
+        else {
+          currentEquationIndex++;
+          newQuestion();
+        }
+      }
+    }
+
+    function clearHighlights() {
+      for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+          buttons[i][j].classList.remove("highlight");
+        }
+      }
+    }
+
+    function checkWin() {
+      for (let row of marks) if (row.every(x => x)) return true;
+      for (let col = 0; col < 5; col++) if (marks.every(row => row[col])) return true;
+      if ([0,1,2,3,4].every(i => marks[i][i])) return true;
+      if ([0,1,2,3,4].every(i => marks[i][4 - i])) return true;
+      return false;
+    }
+
+    function celebrateWin() {
+      confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+      endGame("🎉 BINGO! You win! 🎉");
+    }
+
+    function endGame(message) {
+      document.getElementById("endMessage").textContent = message;
+      document.getElementById("endScreen").style.display = "block";
+      answerButtonsEl.innerHTML = "";
+    }
+
+    function playAgain() { location.reload(); }
+    function goHome() { window.location.href = "index.html"; }
+
+    // Init
+    createBoard();
+    generateEquations();
+    newQuestion();
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>

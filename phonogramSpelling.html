@@ -76,10 +76,10 @@
       <input type="text" id="answer" placeholder="Type your answer here" />
       <button onclick="checkAnswer()">Submit</button>
     </div>
-    <div id="message"></div>
-    <button id="start-over" onclick="startOver()">🔄 Start Over</button>
-    <button onclick="goHome()">🏠 Return to Homepage</button>
-  </div>
+    <div id="end-buttons" style="display:none; margin-top: 15px;">
+      <button id="start-over" onclick="startOver()">🔄 Start Over</button>
+      <button onclick="goHome()">🏠 Return to Homepage</button>
+    </div>
   
 
   <div id="image-container">
@@ -164,7 +164,7 @@
 
         currentIndex++;
         // auto-advance after short delay
-        if (currentIndex < questionOrder.length) {
+        if (currentIndex < 3) {
           setTimeout(() => loadQuestion(currentIndex), 800);
         }
       } else {
@@ -182,8 +182,8 @@
       document.getElementById("piece" + randomIndex).style.opacity = 1;
 
       if (revealedPieces.length === 4) {
-        messageEl.textContent = "🎉 You revealed the full image! 🎉";
-        startOverBtn.style.display = "inline-block";
+          messageEl.textContent = "🎉 You revealed the full image! 🎉";
+          document.getElementById("end-buttons").style.display = "block"; // show both buttons
       }
     }
 

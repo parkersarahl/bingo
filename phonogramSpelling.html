@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Audio Reveal Puzzle</title>
+  <title>Phonogram Spelling</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -28,11 +28,13 @@
       position: absolute;
       width: 50%;
       height: 50%;
-      background-size: cover; /* fills each piece */
-      background-position: center;
+      background-image: url('images/skillern.png'); /* full image */
+      background-size: 200% auto; /* width is double to allow for 4 pieces */
+      background-position: top left; /* change per piece */
       opacity: 0;
       transition: opacity 0.5s;
-    }
+ }
+
 
     button, input[type="text"] {
       padding: 10px 15px;
@@ -67,10 +69,10 @@
   </div>
 
   <div id="image-container">
-    <div class="image-piece" id="piece0" style="top:0; left:0; background-image:url('images/piece0.png');"></div>
-    <div class="image-piece" id="piece1" style="top:0; left:50%; background-image:url('images/piece1.png');"></div>
-    <div class="image-piece" id="piece2" style="top:50%; left:0; background-image:url('images/piece2.png');"></div>
-    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-image:url('images/piece3.png');"></div>
+    <div class="image-piece" id="piece0" style="top:0; left:0; background-position: top left;"></div>
+    <div class="image-piece" id="piece1" style="top:0; left:50%; background-position: top right;"></div>
+    <div class="image-piece" id="piece2" style="top:50%; left:0; background-position: bottom left;"></div>
+    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-position: bottom right;"></div>
   </div>
 
   <script>

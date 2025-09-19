@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Phonogram Spelling</title>
+  <title>Phonogram Spelling Puzzle</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -18,23 +18,27 @@
 
     #image-container {
       position: relative;
-      width: 400px;
-      height: 400px;
+      width: 400px;   /* container width */
+      height: 400px;  /* container height */
       margin: 20px auto;
       border: 2px solid #333;
+      overflow: hidden;
     }
 
     .image-piece {
       position: absolute;
       width: 50%;
       height: 50%;
-      background-image: url('images/skillern.png'); /* full image */
-      background-size: 200% auto; /* width is double to allow for 4 pieces */
-      background-position: top left; /* change per piece */
+      overflow: hidden;
       opacity: 0;
       transition: opacity 0.5s;
- }
+    }
 
+    .image-piece img {
+      position: absolute;
+      width: 400px;   /* full image width */
+      height: 400px;  /* full image height */
+    }
 
     button, input[type="text"] {
       padding: 10px 15px;
@@ -57,7 +61,7 @@
   </style>
 </head>
 <body>
-  <h1>🎧 Audio Reveal Puzzle 🎧</h1>
+  <h1>🎧 Phonogram Spelling Puzzle 🎧</h1>
 
   <div id="game">
     <audio id="audio" controls></audio>
@@ -69,10 +73,18 @@
   </div>
 
   <div id="image-container">
-    <div class="image-piece" id="piece0" style="top:0; left:0; background-position: top left;"></div>
-    <div class="image-piece" id="piece1" style="top:0; left:50%; background-position: top right;"></div>
-    <div class="image-piece" id="piece2" style="top:50%; left:0; background-position: bottom left;"></div>
-    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-position: bottom right;"></div>
+    <div class="image-piece" id="piece0" style="top:0; left:0;">
+      <img src="images/skillern.png" style="top:0; left:0;">
+    </div>
+    <div class="image-piece" id="piece1" style="top:0; left:50%;">
+      <img src="images/skillern.png" style="top:0; left:-200px;">
+    </div>
+    <div class="image-piece" id="piece2" style="top:50%; left:0;">
+      <img src="images/skillern.png" style="top:-200px; left:0;">
+    </div>
+    <div class="image-piece" id="piece3" style="top:50%; left:50%;">
+      <img src="images/skillern.png" style="top:-200px; left:-200px;">
+    </div>
   </div>
 
   <script>

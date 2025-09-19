@@ -78,7 +78,9 @@
     </div>
     <div id="message"></div>
     <button id="start-over" onclick="startOver()">🔄 Start Over</button>
+    <button onclick="goHome()">🏠 Return to Homepage</button>
   </div>
+  
 
   <div id="image-container">
     <div class="image-piece" id="piece0" style="top:0; left:0;">
@@ -162,7 +164,9 @@
 
         currentIndex++;
         // auto-advance after short delay
-        setTimeout(() => loadQuestion(currentIndex), 800);
+        if (currentIndex < questionOrder.length) {
+          setTimeout(() => loadQuestion(currentIndex), 800);
+        }
       } else {
         messageEl.textContent = "❌ Try Again!";
         messageEl.style.color = "#D32F2F";
@@ -186,6 +190,7 @@
     function startOver() {
       initGame();
     }
+    function goHome() { window.location.href = "index.html"; }
 
     // Initialize the game
     initGame();

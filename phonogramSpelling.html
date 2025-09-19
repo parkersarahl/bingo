@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Phonogram Spelling Puzzle</title>
+  <title>Phonogram Puzzle</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -18,8 +18,8 @@
 
     #image-container {
       position: relative;
-      width: 400px;   /* container width */
-      height: 400px;  /* container height */
+      width: 400px;   
+      height: 400px;  
       margin: 20px auto;
       border: 2px solid #333;
       overflow: hidden;
@@ -36,8 +36,8 @@
 
     .image-piece img {
       position: absolute;
-      width: 400px;   /* full image width */
-      height: 400px;  /* full image height */
+      width: 400px;  
+      height: 400px; 
     }
 
     button, input[type="text"] {
@@ -58,10 +58,17 @@
       margin-top: 10px;
       min-height: 24px;
     }
+
+    #start-over {
+      display: none;
+      margin-top: 15px;
+      background-color: #2563eb;
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <h1>🎧 Phonogram Spelling Puzzle 🎧</h1>
+  <h1>🎧 Phonogram Puzzle 🎧</h1>
 
   <div id="game">
     <audio id="audio" controls></audio>
@@ -70,6 +77,7 @@
       <button onclick="checkAnswer()">Submit</button>
     </div>
     <div id="message"></div>
+    <button id="start-over" onclick="startOver()">🔄 Start Over</button>
   </div>
 
   <div id="image-container">
@@ -95,20 +103,42 @@
       { src: "audioClips/c.m4a", answer: "c" }
     ];
 
+    let questionOrder = [];
     let currentIndex = 0;
     let revealedPieces = [];
 
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
     const messageEl = document.getElementById("message");
+    const startOverBtn = document.getElementById("start-over");
+
+    function shuffleArray(arr) {
+      return arr
+        .map(value => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+    }
+
+    function initGame() {
+      questionOrder = shuffleArray([...questions]);
+      currentIndex = 0;
+      revealedPieces = [];
+      // reset all pieces
+      for (let i = 0; i < 4; i++) {
+        document.getElementById("piece" + i).style.opacity = 0;
+      }
+      startOverBtn.style.display = "none";
+      loadQuestion(currentIndex);
+    }
 
     function loadQuestion(index) {
-      if (index >= questions.length) {
-        messageEl.textContent = "🎉 You revealed the full image! 🎉";
+      if (index >= questionOrder.length) {
+        messageEl.textContent = "🎉 You completed all questions! 🎉";
         audioEl.src = "";
+        startOverBtn.style.display = "inline-block";
         return;
       }
-      audioEl.src = questions[index].src;
+      audioEl.src = questionOrder[index].src;
       answerEl.value = "";
       messageEl.textContent = "";
       audioEl.play();
@@ -116,7 +146,7 @@
 
     function checkAnswer() {
       const userAnswer = answerEl.value.trim().toLowerCase();
-      const correctAnswer = questions[currentIndex].answer.toLowerCase();
+      const correctAnswer = questionOrder[currentIndex].answer.toLowerCase();
 
       if (userAnswer === correctAnswer) {
         messageEl.textContent = "✅ Correct!";
@@ -142,11 +172,16 @@
 
       if (revealedPieces.length === 4) {
         messageEl.textContent = "🎉 You revealed the full image! 🎉";
+        startOverBtn.style.display = "inline-block";
       }
     }
 
-    // Start first question
-    loadQuestion(currentIndex);
+    function startOver() {
+      initGame();
+    }
+
+    // Initialize the game
+    initGame();
   </script>
 </body>
 </html>

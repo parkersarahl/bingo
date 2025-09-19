@@ -68,27 +68,19 @@
   </div>
 
   <div id="image-container">
-    <!-- 8 pieces of the image -->
-    <div class="image-piece" id="piece0" style="top:0; left:0; background-image:url('piece0.jpg');"></div>
-    <div class="image-piece" id="piece1" style="top:0; left:50%; background-image:url('piece1.jpg');"></div>
-    <div class="image-piece" id="piece2" style="top:50%; left:0; background-image:url('piece2.jpg');"></div>
-    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-image:url('piece3.jpg');"></div>
-    <div class="image-piece" id="piece4" style="top:0; left:0; background-image:url('piece4.jpg');"></div>
-    <div class="image-piece" id="piece5" style="top:0; left:50%; background-image:url('piece5.jpg');"></div>
-    <div class="image-piece" id="piece6" style="top:50%; left:0; background-image:url('piece6.jpg');"></div>
-    <div class="image-piece" id="piece7" style="top:50%; left:50%; background-image:url('piece7.jpg');"></div>
+    <!-- 4 pieces of the image -->
+    <div class="image-piece" id="piece0" style="top:0; left:0; background-image:url('piece0.png');"></div>
+    <div class="image-piece" id="piece1" style="top:0; left:50%; background-image:url('piece0.png');"></div>
+    <div class="image-piece" id="piece2" style="top:50%; left:0; background-image:url('piece0.png');"></div>
+    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-image:url('piece0.png');"></div>
   </div>
 
   <script>
     const questions = [
-      { src: "/audioClips/audio1.m4a", answer: "7" },
-      { src: "/audioClips/audio2.mp3", answer: "12" },
-      { src: "/audioClips/audio3.mp3", answer: "0" },
-      { src: "/audioClips/audio4.mp3", answer: "5" },
-      { src: "/audioClips/audio5.mp3", answer: "3" },
-      { src: "/audioClips/audio6.mp3", answer: "9" },
-      { src: "/audioClips/audio7.mp3", answer: "1" },
-      { src: "/audioClips/audio8.mp3", answer: "4" }
+      { src: "/audioClips/tch.m4a", answer: "tch" },
+      { src: "/audioClips/oe.m4a", answer: "oe" },
+      { src: "/audioClips/ir.m4a", answer: "ir" },
+      { src: "/audioClips/c.m4a", answer: "c" },
     ];
 
     let currentIndex = 0;
@@ -125,10 +117,10 @@
     }
 
     function revealPiece(index) {
-      if (index < 8) {
+      if (index < 4) {
         document.getElementById("piece" + index).style.opacity = 1;
       }
-      if (index === 7) {
+      if (index === 3) {
         messageEl.textContent = "🎉 You revealed the full image! 🎉";
       }
     }

@@ -59,9 +59,12 @@
       min-height: 24px;
     }
 
-    #start-over {
+    #end-buttons {
       display: none;
       margin-top: 15px;
+    }
+
+    #start-over {
       background-color: #2563eb;
       color: white;
     }
@@ -76,11 +79,14 @@
       <input type="text" id="answer" placeholder="Type your answer here" />
       <button onclick="checkAnswer()">Submit</button>
     </div>
-    <div id="end-buttons" style="display:none; margin-top: 15px;">
+
+    <div id="message"></div>
+
+    <div id="end-buttons">
       <button id="start-over" onclick="startOver()">🔄 Start Over</button>
       <button onclick="goHome()">🏠 Return to Homepage</button>
     </div>
-  
+  </div>
 
   <div id="image-container">
     <div class="image-piece" id="piece0" style="top:0; left:0;">
@@ -119,7 +125,7 @@
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
     const messageEl = document.getElementById("message");
-    const startOverBtn = document.getElementById("start-over");
+    const endButtons = document.getElementById("end-buttons");
 
     function shuffleArray(arr) {
       return arr
@@ -132,11 +138,11 @@
       questionOrder = shuffleArray([...questions]);
       currentIndex = 0;
       revealedPieces = [];
-      // reset all pieces
+      // reset pieces
       for (let i = 0; i < 4; i++) {
         document.getElementById("piece" + i).style.opacity = 0;
       }
-      startOverBtn.style.display = "none";
+      endButtons.style.display = "none";
       loadQuestion(currentIndex);
     }
 
@@ -144,7 +150,7 @@
       if (index >= questionOrder.length) {
         messageEl.textContent = "🎉 You completed all questions! 🎉";
         audioEl.src = "";
-        startOverBtn.style.display = "inline-block";
+        endButtons.style.display = "block";
         return;
       }
       audioEl.src = questionOrder[index].src;
@@ -163,7 +169,7 @@
         revealRandomPiece();
 
         currentIndex++;
-        // auto-advance after short delay
+        // auto-advance only for first 3 questions
         if (currentIndex < 3) {
           setTimeout(() => loadQuestion(currentIndex), 800);
         }
@@ -182,17 +188,20 @@
       document.getElementById("piece" + randomIndex).style.opacity = 1;
 
       if (revealedPieces.length === 4) {
-          messageEl.textContent = "🎉 You revealed the full image! 🎉";
-          document.getElementById("end-buttons").style.display = "block"; // show both buttons
+        messageEl.textContent = "🎉 You revealed the full image! 🎉";
+        endButtons.style.display = "block";
       }
     }
 
     function startOver() {
       initGame();
     }
-    function goHome() { window.location.href = "index.html"; }
 
-    // Initialize the game
+    function goHome() {
+      window.location.href = "index.html";
+    }
+
+    // start the game
     initGame();
   </script>
 </body>

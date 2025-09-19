@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Audio Reveal Game</title>
+  <title>Audio Reveal Puzzle</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -28,7 +28,7 @@
       position: absolute;
       width: 50%;
       height: 50%;
-      background-size: cover;
+      background-size: cover; /* fills each piece */
       background-position: center;
       opacity: 0;
       transition: opacity 0.5s;
@@ -55,36 +55,34 @@
   </style>
 </head>
 <body>
-  <h1>🎧 Phonogram Spelling 🎧</h1>
+  <h1>🎧 Audio Reveal Puzzle 🎧</h1>
 
   <div id="game">
     <audio id="audio" controls></audio>
     <div>
       <input type="text" id="answer" placeholder="Type your answer here" />
       <button onclick="checkAnswer()">Submit</button>
-      <button onclick="nextQuestion()">Next Question</button>
     </div>
     <div id="message"></div>
   </div>
 
   <div id="image-container">
-    <!-- 4 pieces of the image -->
-    <div class="image-piece" id="piece0" style="top:0; left:0; background-image:url('/images/piece0.png');"></div>
-    <div class="image-piece" id="piece1" style="top:0; left:50%; background-image:url('/images/piece1.png');"></div>
-    <div class="image-piece" id="piece2" style="top:50%; left:0; background-image:url('/images/piece2.png');"></div>
-    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-image:url('/images/piece3.png');"></div>
+    <div class="image-piece" id="piece0" style="top:0; left:0; background-image:url('images/piece0.png');"></div>
+    <div class="image-piece" id="piece1" style="top:0; left:50%; background-image:url('images/piece1.png');"></div>
+    <div class="image-piece" id="piece2" style="top:50%; left:0; background-image:url('images/piece2.png');"></div>
+    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-image:url('images/piece3.png');"></div>
   </div>
 
   <script>
     const questions = [
-      { src: "/audioClips/tch.m4a", answer: "tch" },
-      { src: "/audioClips/oe.m4a", answer: "oe" },
-      { src: "/audioClips/ir.m4a", answer: "ir" },
-      { src: "/audioClips/c.m4a", answer: "c" },
+      { src: "audioClips/tch.m4a", answer: "tch" },
+      { src: "audioClips/oe.m4a", answer: "oe" },
+      { src: "audioClips/ir.m4a", answer: "ir" },
+      { src: "audioClips/c.m4a", answer: "c" }
     ];
 
     let currentIndex = 0;
-    let correctCount = 0;
+    let revealedPieces = [];
 
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
@@ -92,7 +90,7 @@
 
     function loadQuestion(index) {
       if (index >= questions.length) {
-        messageEl.textContent = "🎉 All questions done!";
+        messageEl.textContent = "🎉 You revealed the full image! 🎉";
         audioEl.src = "";
         return;
       }
@@ -103,36 +101,37 @@
     }
 
     function checkAnswer() {
-      const userAnswer = answerEl.value.trim();
-      if (userAnswer === questions[currentIndex].answer) {
+      const userAnswer = answerEl.value.trim().toLowerCase();
+      const correctAnswer = questions[currentIndex].answer.toLowerCase();
+
+      if (userAnswer === correctAnswer) {
         messageEl.textContent = "✅ Correct!";
         messageEl.style.color = "#2E7D32";
-        revealPiece(correctCount);
-        correctCount++;
+        revealRandomPiece();
+
+        currentIndex++;
+        // auto-advance after short delay
+        setTimeout(() => loadQuestion(currentIndex), 800);
       } else {
         messageEl.textContent = "❌ Try Again!";
         messageEl.style.color = "#D32F2F";
-        return; // don't advance question
       }
     }
 
-    function revealPiece(index) {
-      if (index < 4) {
-        document.getElementById("piece" + index).style.opacity = 1;
-      }
-      if (index === 3) {
+    function revealRandomPiece() {
+      const remainingPieces = [0,1,2,3].filter(i => !revealedPieces.includes(i));
+      if (remainingPieces.length === 0) return;
+
+      const randomIndex = remainingPieces[Math.floor(Math.random() * remainingPieces.length)];
+      revealedPieces.push(randomIndex);
+      document.getElementById("piece" + randomIndex).style.opacity = 1;
+
+      if (revealedPieces.length === 4) {
         messageEl.textContent = "🎉 You revealed the full image! 🎉";
       }
     }
 
-    function nextQuestion() {
-      currentIndex++;
-      if (currentIndex < questions.length) {
-        loadQuestion(currentIndex);
-      }
-    }
-
-    // Start the first question
+    // Start first question
     loadQuestion(currentIndex);
   </script>
 </body>

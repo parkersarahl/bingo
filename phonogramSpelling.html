@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Audio Reveal Game</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #image-container {
+      position: relative;
+      width: 400px;
+      height: 400px;
+      margin: 20px auto;
+      border: 2px solid #333;
+    }
+
+    .image-piece {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    button, input[type="text"] {
+      padding: 10px 15px;
+      font-size: 1.2rem;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    #message {
+      font-weight: bold;
+      margin-top: 10px;
+      min-height: 24px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎧 Audio Reveal Game 🎧</h1>
+
+  <div id="game">
+    <audio id="audio" controls></audio>
+    <div>
+      <input type="text" id="answer" placeholder="Type your answer here" />
+      <button onclick="checkAnswer()">Submit</button>
+      <button onclick="nextQuestion()">Next Question</button>
+    </div>
+    <div id="message"></div>
+  </div>
+
+  <div id="image-container">
+    <!-- 8 pieces of the image -->
+    <div class="image-piece" id="piece0" style="top:0; left:0; background-image:url('piece0.jpg');"></div>
+    <div class="image-piece" id="piece1" style="top:0; left:50%; background-image:url('piece1.jpg');"></div>
+    <div class="image-piece" id="piece2" style="top:50%; left:0; background-image:url('piece2.jpg');"></div>
+    <div class="image-piece" id="piece3" style="top:50%; left:50%; background-image:url('piece3.jpg');"></div>
+    <div class="image-piece" id="piece4" style="top:0; left:0; background-image:url('piece4.jpg');"></div>
+    <div class="image-piece" id="piece5" style="top:0; left:50%; background-image:url('piece5.jpg');"></div>
+    <div class="image-piece" id="piece6" style="top:50%; left:0; background-image:url('piece6.jpg');"></div>
+    <div class="image-piece" id="piece7" style="top:50%; left:50%; background-image:url('piece7.jpg');"></div>
+  </div>
+
+  <script>
+    const questions = [
+      { src: "/audioClips/audio1.m4a", answer: "7" },
+      { src: "/audioClips/audio2.mp3", answer: "12" },
+      { src: "/audioClips/audio3.mp3", answer: "0" },
+      { src: "/audioClips/audio4.mp3", answer: "5" },
+      { src: "/audioClips/audio5.mp3", answer: "3" },
+      { src: "/audioClips/audio6.mp3", answer: "9" },
+      { src: "/audioClips/audio7.mp3", answer: "1" },
+      { src: "/audioClips/audio8.mp3", answer: "4" }
+    ];
+
+    let currentIndex = 0;
+    let correctCount = 0;
+
+    const audioEl = document.getElementById("audio");
+    const answerEl = document.getElementById("answer");
+    const messageEl = document.getElementById("message");
+
+    function loadQuestion(index) {
+      if (index >= questions.length) {
+        messageEl.textContent = "🎉 All questions done!";
+        audioEl.src = "";
+        return;
+      }
+      audioEl.src = questions[index].src;
+      answerEl.value = "";
+      messageEl.textContent = "";
+      audioEl.play();
+    }
+
+    function checkAnswer() {
+      const userAnswer = answerEl.value.trim();
+      if (userAnswer === questions[currentIndex].answer) {
+        messageEl.textContent = "✅ Correct!";
+        messageEl.style.color = "#2E7D32";
+        revealPiece(correctCount);
+        correctCount++;
+      } else {
+        messageEl.textContent = "❌ Try Again!";
+        messageEl.style.color = "#D32F2F";
+        return; // don't advance question
+      }
+    }
+
+    function revealPiece(index) {
+      if (index < 8) {
+        document.getElementById("piece" + index).style.opacity = 1;
+      }
+      if (index === 7) {
+        messageEl.textContent = "🎉 You revealed the full image! 🎉";
+      }
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        loadQuestion(currentIndex);
+      }
+    }
+
+    // Start the first question
+    loadQuestion(currentIndex);
+  </script>
+</body>
+</html>

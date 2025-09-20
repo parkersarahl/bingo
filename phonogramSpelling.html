@@ -33,8 +33,10 @@
   }
 
   .image-piece img {
-    width: 800px;   /* full image width */
-    height: 1200px;  /* full image height */
+    width: 100%;   /* full image width */
+    height: 100%;  /* full image height */
+    object-fit: cover;
+    object-position: 0 0;
     position: absolute;
   }
 
@@ -103,7 +105,8 @@ const images = [
   "images/duck.jpg",
   "images/flying_bird.jpg",
   "images/lotus.jpg",
-  "images/sun.jpg"
+  "images/sun.jpg",
+  "images/butterfly.jpg",
 ];
 
 let questionOrder = [];
@@ -140,11 +143,8 @@ function initGame() {
     const row = Math.floor(idx / cols);
     const col = idx % cols;
 
-    // Position the full image inside the piece to show only the slice
-    img.style.width = `${containerWidth}px`;
-    img.style.height = `${containerHeight * rows}px`;
-    img.style.left = `-${col * (containerWidth / cols)}px`;
-    img.style.top = `-${row * (containerHeight / rows)}px`;
+    // object-position in percentages to show correct slice
+    img.style.objectPosition = `${(col / (cols - 1)) * 100}% ${(row / (rows - 1)) * 100}%`;
   });
 
   endButtons.style.display = "none";

@@ -22,14 +22,14 @@
       height: 200px;   /* 2 rows of 100px */
       margin: 20px auto;
       border: 2px solid #333;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, 1fr);
       overflow: hidden;
     }
 
     .image-piece {
-      position: relative;
+      position: absolute;
+      width: 25%;    /* 4 pieces per row */
+      height: 50%;   /* 2 rows */
+      overflow: hidden;
       opacity: 0;
       transition: opacity 0.5s;
     }
@@ -38,8 +38,6 @@
       width: 400px;  /* full image width */
       height: 400px; /* full image height */
       position: absolute;
-      top: 0;
-      left: 0;
     }
 
     button, input[type="text"] {
@@ -92,15 +90,17 @@
 
   <div id="image-container">
     <!-- 8 pieces -->
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-    <div class="image-piece"><img src=""></div>
-  </div>
+    <div class="image-piece" style="top:0; left:0;"><img src=""></div>
+    <div class="image-piece" style="top:0; left:25%;"><img src=""></div>
+    <div class="image-piece" style="top:0; left:50%;"><img src=""></div>
+    <div class="image-piece" style="top:0; left:75%;"><img src=""></div>
+
+    <div class="image-piece" style="top:50%; left:0;"><img src=""></div>
+    <div class="image-piece" style="top:50%; left:25%;"><img src=""></div>
+    <div class="image-piece" style="top:50%; left:50%;"><img src=""></div>
+    <div class="image-piece" style="top:50%; left:75%;"><img src=""></div>
+</div>
+
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -159,8 +159,9 @@
         // Slice image using object position
         const row = Math.floor(idx / 4);
         const col = idx % 4;
-        img.style.objectFit = "cover";
-        img.style.objectPosition = `${-col * 25}% ${-row * 50}%`;
+        
+        img.style.top = `${-row * 50}%`;    // move image up for row
+        img.style.left = `${-col * 25}%`;   // move image left for col
       });
 
       endButtons.style.display = "none";

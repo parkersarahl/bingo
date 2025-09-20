@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>School Games</title>
+  <title>Math Bingo</title>
   <style>
     body {
       font-family: "Segoe UI", Arial, sans-serif;
@@ -59,16 +59,8 @@
       background-color: #74ebd5;
     }
 
-    .math-btn:before {
-      content: "➕ ➖";
-      color: #FFD93D;
-      font-weight: bold;
-      font-size: 1.5em;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    .phonogram-btn:before {
-      content: "🎧";
+    .addition-btn:before {
+      content: "+";
       color: #FFD93D;
       font-weight: bold;
       font-size: 1.5em;
@@ -76,22 +68,43 @@
       vertical-align: middle;
     }
 
-
+    .minus-btn::before {
+      content: "-";
+      color: #FFD93D;
+      font-weight: bold;
+      font-size: 1.5em;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
-  <h1>🎉 Welcome to School Games 🎉</h1>
+  <h1>🎉 Welcome to Math Bingo 🎉</h1>
 
   <div class="menu">
-    <!-- Menu Section -->
+    <!-- Addition Section -->
     <div class="section">
-      <p>Pick a Game</p>
+      <p>Addition</p>
       <div class="button-group">
-        <button class="math-btn" onclick="location.href='MathBingo.html'"> Math</button>
-        <button class="phonogram-btn" onclick="location.href='phonogramSpelling.html'"> Phonogram</button>
+        <button class="addition-btn" onclick="location.href='plus0.html'">0</button>
+        <button class="addition-btn" onclick="location.href='plus1.html'">1</button>
+        <button class="addition-btn" onclick="location.href='plus2.html'">2</button>
+        <button class="addition-btn" onclick="location.href='plus3.html'">3</button>
+        <button class="addition-btn" onclick="location.href='plus4.html'">4</button>
       </div>
     </div>
-  </div>
+
+    <!-- Subtraction Section -->
+    <div class="section">
+      <p>Subtraction</p>
+      <div class="button-group">
+        <button class="minus-btn" onclick="location.href='minus0.html'">0</button>
+        <button class="minus-btn" onclick="location.href='minus1.html'">1</button>
+        <button class="minus-btn" onclick="location.href='minus2.html'">2</button>
+        <button class="minus-btn" onclick="location.href='minus3.html'">3</button>
+        <button class="minus-btn" onclick="location.href='minus4.html'">4</button>
+      </div>
+    </div>
 <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

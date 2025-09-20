@@ -35,9 +35,21 @@
 
     .button-group {
       display: flex;
-      gap: 10px;
+      gap: 40px; /* space between buttons */
       justify-content: center;
       flex-wrap: wrap;
+    }
+
+    .button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .button-wrapper p {
+      margin: 0 0 8px 0;
+      font-size: 1rem;
+      font-weight: bold;
     }
 
     button {
@@ -48,7 +60,7 @@
       border: none;
       border-radius: 12px;
       cursor: pointer;
-      background:whitesmoke;
+      background: whitesmoke;
       box-shadow: 0 3px 5px rgba(0,0,0,0.1);
       transition: transform 0.2s, box-shadow 0.2s;
     }
@@ -75,26 +87,25 @@
       margin-right: 8px;
       vertical-align: middle;
     }
-
-
   </style>
 </head>
 <body>
   <h1>🎉 Welcome to School Games 🎉</h1>
 
   <div class="menu">
-    <!-- Menu Section -->
     <div class="section">
       <p>Pick a Game</p>
       <div class="button-group">
-        <button class="math-btn" onclick="location.href='MathBingo.html'"> Math</button>
-        <button class="phonogram-btn" onclick="location.href='phonogramSpelling.html'"> Phonogram</button>
+        <div class="button-wrapper">
+          <p>Math</p>
+          <button class="math-btn" onclick="location.href='MathBingo.html'"></button>
+        </div>
+        <div class="button-wrapper">
+          <p>Phonogram</p>
+          <button class="phonogram-btn" onclick="location.href='phonogramSpelling.html'"></button>
+        </div>
       </div>
     </div>
   </div>
-<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-
-
-

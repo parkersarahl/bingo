@@ -19,27 +19,28 @@
     #image-container {
       position: relative;
       width: 400px;   
-      height: 400px;  
+      height: 200px;   /* 2 rows of 100px */
       margin: 20px auto;
       border: 2px solid #333;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 1fr);
       overflow: hidden;
     }
 
     .image-piece {
-      position: absolute;
-      width: 25%;
-      height: 50%;
-      overflow: hidden;
+      position: relative;
       opacity: 0;
       transition: opacity 0.5s;
     }
 
     .image-piece img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* or contain, depending on your preference */
+      width: 400px;  /* full image width */
+      height: 400px; /* full image height */
       position: absolute;
-}
+      top: 0;
+      left: 0;
+    }
 
     button, input[type="text"] {
       padding: 10px 15px;
@@ -90,36 +91,17 @@
   </div>
 
   <div id="image-container">
-    <!-- row 0 -->
-    <div class="image-piece" id="piece0" style="top:0; left:0;">
-      <img src="" style="top:0; left:0;">
-    </div>
-    <div class="image-piece" id="piece1" style="top:0; left:25%;">
-      <img src="" style="top:0; left:-100px;">
-    </div>
-    <div class="image-piece" id="piece2" style="top:0; left:50%;">
-      <img src="" style="top:0; left:-200px;">
-    </div>
-    <div class="image-piece" id="piece3" style="top:0; left:75%;">
-      <img src="" style="top:0; left:-300px;">
-    </div>
-
-    <!-- row 1 -->
-    <div class="image-piece" id="piece4" style="top:50%; left:0;">
-      <img src="" style="top:-100px; left:0;">
-    </div>
-    <div class="image-piece" id="piece5" style="top:50%; left:25%;">
-      <img src="" style="top:-100px; left:-100px;">
-    </div>
-    <div class="image-piece" id="piece6" style="top:50%; left:50%;">
-      <img src="" style="top:-100px; left:-200px;">
-    </div>
-    <div class="image-piece" id="piece7" style="top:50%; left:75%;">
-      <img src="" style="top:-100px; left:-300px;">
-    </div>
+    <!-- 8 pieces -->
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
+    <div class="image-piece"><img src=""></div>
   </div>
-  
-  <!-- Confetti library -->
+
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
@@ -148,11 +130,11 @@
       "images/sun.jpg",
     ];
 
-
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
     const messageEl = document.getElementById("message");
     const endButtons = document.getElementById("end-buttons");
+    const pieceEls = document.querySelectorAll(".image-piece");
 
     function shuffleArray(arr) {
       return arr
@@ -167,13 +149,20 @@
       questionOrder = shuffleArray([...questions]);
       currentIndex = 0;
       revealedPieces = [];
-      // reset pieces
-      for (let i = 0; i < 8; i++) {
-        document.getElementById("piece" + i).style.opacity = 0;
-      }
-      document.querySelectorAll(".image-piece img").forEach(img => {
+
+      // Reset pieces
+      pieceEls.forEach((piece, idx) => {
+        piece.style.opacity = 0;
+        const img = piece.querySelector("img");
         img.src = currentImage;
-    });
+
+        // Slice image using object position
+        const row = Math.floor(idx / 4);
+        const col = idx % 4;
+        img.style.objectFit = "cover";
+        img.style.objectPosition = `${-col * 25}% ${-row * 50}%`;
+      });
+
       endButtons.style.display = "none";
       loadQuestion(currentIndex);
     }
@@ -189,14 +178,13 @@
       answerEl.value = "";
       messageEl.textContent = "";
       audioEl.play();
-      const input = document.getElementById("answer");
-      input.value = "";
-      input.focus();
+      answerEl.focus();
     }
+
     answerEl.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-          checkAnswer();
-        }
+      if (event.key === "Enter") {
+        checkAnswer();
+      }
     });
 
     function checkAnswer() {
@@ -209,23 +197,20 @@
         revealRandomPiece();
 
         currentIndex++;
-        // auto-advance only for first 8 questions
-        if (currentIndex < 8) {
-          setTimeout(() => loadQuestion(currentIndex), 800);
-        }
+        if (currentIndex < 8) setTimeout(() => loadQuestion(currentIndex), 800);
       } else {
         messageEl.textContent = "❌ Try Again!";
         messageEl.style.color = "#D32F2F";
       }
-  }
+    }
 
     function revealRandomPiece() {
-      const remainingPieces = [...Array(8).keys()].filter(i => !revealedPieces.includes(i));
-      if (remainingPieces.length === 0) return;
+      const remaining = [...Array(8).keys()].filter(i => !revealedPieces.includes(i));
+      if (remaining.length === 0) return;
 
-      const randomIndex = remainingPieces[Math.floor(Math.random() * remainingPieces.length)];
-      revealedPieces.push(randomIndex);
-      document.getElementById("piece" + randomIndex).style.opacity = 1;
+      const randIdx = remaining[Math.floor(Math.random() * remaining.length)];
+      revealedPieces.push(randIdx);
+      pieceEls[randIdx].style.opacity = 1;
 
       if (revealedPieces.length === 8) {
         celebrateWin();
@@ -245,9 +230,8 @@
     function celebrateWin() {
       confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
     }
-    // start the game
+
     initGame();
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

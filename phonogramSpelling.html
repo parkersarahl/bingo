@@ -19,7 +19,7 @@
     #image-container {
       position: relative;
       width: 400px;   
-      height: 400px;  
+      height: 200px;  
       margin: 20px auto;
       border: 2px solid #333;
       overflow: hidden;
@@ -27,7 +27,7 @@
 
     .image-piece {
       position: absolute;
-      width: 50%;
+      width: 25%;
       height: 50%;
       overflow: hidden;
       opacity: 0;
@@ -89,19 +89,37 @@
   </div>
 
   <div id="image-container">
+    <!-- row 0 -->
     <div class="image-piece" id="piece0" style="top:0; left:0;">
       <img src="images/skillern.png" style="top:0; left:0;">
     </div>
-    <div class="image-piece" id="piece1" style="top:0; left:50%;">
+    <div class="image-piece" id="piece1" style="top:0; left:25%;">
+      <img src="images/skillern.png" style="top:0; left:-100px;">
+    </div>
+    <div class="image-piece" id="piece2" style="top:0; left:50%;">
       <img src="images/skillern.png" style="top:0; left:-200px;">
     </div>
-    <div class="image-piece" id="piece2" style="top:50%; left:0;">
-      <img src="images/skillern.png" style="top:-200px; left:0;">
+    <div class="image-piece" id="piece3" style="top:0; left:75%;">
+      <img src="images/skillern.png" style="top:0; left:-300px;">
     </div>
-    <div class="image-piece" id="piece3" style="top:50%; left:50%;">
-      <img src="images/skillern.png" style="top:-200px; left:-200px;">
+
+    <!-- row 1 -->
+    <div class="image-piece" id="piece4" style="top:50%; left:0;">
+      <img src="images/skillern.png" style="top:-100px; left:0;">
+    </div>
+    <div class="image-piece" id="piece5" style="top:50%; left:25%;">
+      <img src="images/skillern.png" style="top:-100px; left:-100px;">
+    </div>
+    <div class="image-piece" id="piece6" style="top:50%; left:50%;">
+      <img src="images/skillern.png" style="top:-100px; left:-200px;">
+    </div>
+    <div class="image-piece" id="piece7" style="top:50%; left:75%;">
+      <img src="images/skillern.png" style="top:-100px; left:-300px;">
     </div>
   </div>
+  
+  <!-- Confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
     const questions = [
@@ -150,7 +168,7 @@
       currentIndex = 0;
       revealedPieces = [];
       // reset pieces
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < 8; i++) {
         document.getElementById("piece" + i).style.opacity = 0;
       }
       document.querySelectorAll(".image-piece img").forEach(img => {
@@ -183,8 +201,8 @@
         revealRandomPiece();
 
         currentIndex++;
-        // auto-advance only for first 4 questions
-        if (currentIndex < 4) {
+        // auto-advance only for first 8 questions
+        if (currentIndex < 8) {
           setTimeout(() => loadQuestion(currentIndex), 800);
         }
       } else {
@@ -194,14 +212,15 @@
     }
 
     function revealRandomPiece() {
-      const remainingPieces = [0,1,2,3].filter(i => !revealedPieces.includes(i));
+      const remainingPieces = [...Array(8).keys()].filter(i => !revealedPieces.includes(i));
       if (remainingPieces.length === 0) return;
 
       const randomIndex = remainingPieces[Math.floor(Math.random() * remainingPieces.length)];
       revealedPieces.push(randomIndex);
       document.getElementById("piece" + randomIndex).style.opacity = 1;
 
-      if (revealedPieces.length === 4) {
+      if (revealedPieces.length === 8) {
+        celebrateWin();
         messageEl.textContent = "🎉 You revealed the full image! 🎉";
         endButtons.style.display = "block";
       }
@@ -215,6 +234,10 @@
       window.location.href = "index.html";
     }
 
+    function celebrateWin() {
+      confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+      endGame("🎉 BINGO! You win! 🎉");
+    }
     // start the game
     initGame();
   </script>

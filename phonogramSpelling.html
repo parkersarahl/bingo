@@ -16,8 +16,8 @@
 
   #image-container {
     position: relative;
-    width: 400px;
-    height: 200px; /* 2 rows */
+    width: 800px;
+    height: 600px; /* 2 rows */
     margin: 20px auto;
     border: 2px solid #333;
     overflow: hidden;
@@ -33,8 +33,8 @@
   }
 
   .image-piece img {
-    width: 400px;   /* full image width */
-    height: 400px;  /* full image height */
+    width: 800px;   /* full image width */
+    height: 1200px;  /* full image height */
     position: absolute;
   }
 
@@ -117,8 +117,8 @@ const pieceEls = document.querySelectorAll(".image-piece");
 
 const rows = 2;
 const cols = 4;
-const containerWidth = 400;
-const containerHeight = 200;
+const containerWidth = 800;
+const containerHeight = 600;
 
 function shuffleArray(arr) {
   return arr.map(v => ({ value:v, sort: Math.random() }))

@@ -38,7 +38,7 @@
       width: 400px;  /* full image width */
       height: 400px; /* full image height */
       object-fit: cover;
-      object-position: 0,0;
+      object-position: 0 0;
     }
 
     button, input[type="text"] {
@@ -160,8 +160,8 @@
         // Slice image using object position
         const row = Math.floor(idx / 4);
         const col = idx % 4;
-        
-        img.style.objectPosition = `${-(col * 25)}% ${-(row * 50)}%`;
+
+        img.style.objectPosition = `${col * 25}% ${row * 50}%`;
       });
 
       endButtons.style.display = "none";

@@ -143,8 +143,11 @@ function initGame() {
     const row = Math.floor(idx / cols);
     const col = idx % cols;
 
-    // object-position in percentages to show correct slice
-    img.style.objectPosition = `${(col / (cols - 1)) * 100}% ${(row / (rows - 1)) * 100}%`;
+    // Each slice is 25% wide (cols=4) and 50% tall (rows=2)
+    const xPercent = -(col * (100 / cols));
+    const yPercent = -(row * (100 / rows));
+
+    img.style.objectPosition = `${xPercent}% ${yPercent}%`;
   });
 
   endButtons.style.display = "none";

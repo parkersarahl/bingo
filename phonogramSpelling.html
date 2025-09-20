@@ -30,9 +30,14 @@
     height: 300px;  /* 600px / 2 rows */
     overflow: hidden;
     opacity: 0;
-    transition: opacity 0.5s;
-    border: 1px solid rgba(255,255,255,0.3);
+    transform: translate(0, 0);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     box-sizing: border-box;
+  }
+
+  .image-piece.revealed {
+    opacity: 1;
+    transform: translate(0, 0) !important;
   }
 
   .image-piece img {
@@ -139,8 +144,26 @@ function initGame() {
   currentIndex = 0;
   revealedPieces = [];
 
+  // Define sliding directions for each piece (from outside the container)
+  const slideDirections = [
+    { x: -300, y: -200 }, // top-left: slide from top-left
+    { x: 0, y: -400 },    // top-center-left: slide from top
+    { x: 0, y: -400 },    // top-center-right: slide from top
+    { x: 300, y: -200 },  // top-right: slide from top-right
+    { x: -300, y: 200 },  // bottom-left: slide from bottom-left
+    { x: 0, y: 400 },     // bottom-center-left: slide from bottom
+    { x: 0, y: 400 },     // bottom-center-right: slide from bottom
+    { x: 300, y: 200 }    // bottom-right: slide from bottom-right
+  ];
+
   pieceEls.forEach((piece, idx)=>{
+    piece.classList.remove('revealed');
     piece.style.opacity = 0;
+    
+    // Set initial position (off-screen)
+    const direction = slideDirections[idx];
+    piece.style.transform = `translate(${direction.x}px, ${direction.y}px)`;
+    
     const img = piece.querySelector("img");
     img.src = currentImage;
 
@@ -205,7 +228,9 @@ function revealRandomPiece(){
 
   const randIdx = remaining[Math.floor(Math.random()*remaining.length)];
   revealedPieces.push(randIdx);
-  pieceEls[randIdx].style.opacity = 1;
+  
+  // Add revealed class to trigger sliding animation
+  pieceEls[randIdx].classList.add('revealed');
 
   if(revealedPieces.length === 8){
     celebrateWin();

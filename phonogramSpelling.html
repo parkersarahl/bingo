@@ -141,6 +141,7 @@ function shuffleArray(arr) {
 
 function initGame() {
   const currentImage = images[Math.floor(Math.random()*images.length)];
+  console.log("Loading image:", currentImage); // Debug log
   questionOrder = shuffleArray([...questions]);
   currentIndex = 0;
   revealedPieces = [];
@@ -166,6 +167,19 @@ function initGame() {
     piece.style.transform = `translate(${direction.x}px, ${direction.y}px)`;
     
     const img = piece.querySelector("img");
+    
+    // Add error handling for images
+    img.onload = function() {
+      console.log("Image loaded successfully:", currentImage);
+    };
+    
+    img.onerror = function() {
+      console.error("Failed to load image:", currentImage);
+      // Fallback: show a colored background if image fails
+      piece.style.backgroundColor = '#ddd';
+      piece.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;color:#666;">Image not found</div>';
+    };
+    
     img.src = currentImage;
 
     const row = Math.floor(idx / cols);

@@ -193,6 +193,11 @@
       input.value = "";
       input.focus();
     }
+    answerEl.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+          checkAnswer();
+        }
+    });
 
     function checkAnswer() {
       const userAnswer = answerEl.value.trim().toLowerCase();
@@ -212,12 +217,8 @@
         messageEl.textContent = "❌ Try Again!";
         messageEl.style.color = "#D32F2F";
       }
-      answerE1.addEventListener("keydown", function(event) {
-        if (event.key === "Enter") {
-          checkAnswer();
-        }
-      });
-    }
+  }
+
 
     function revealRandomPiece() {
       const remainingPieces = [...Array(8).keys()].filter(i => !revealedPieces.includes(i));

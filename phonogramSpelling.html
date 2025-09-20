@@ -91,30 +91,30 @@
   <div id="image-container">
     <!-- row 0 -->
     <div class="image-piece" id="piece0" style="top:0; left:0;">
-      <img src="images/skillern.png" style="top:0; left:0;">
+      <img src="" style="top:0; left:0;">
     </div>
     <div class="image-piece" id="piece1" style="top:0; left:25%;">
-      <img src="images/skillern.png" style="top:0; left:-100px;">
+      <img src="" style="top:0; left:-100px;">
     </div>
     <div class="image-piece" id="piece2" style="top:0; left:50%;">
-      <img src="images/skillern.png" style="top:0; left:-200px;">
+      <img src="" style="top:0; left:-200px;">
     </div>
     <div class="image-piece" id="piece3" style="top:0; left:75%;">
-      <img src="images/skillern.png" style="top:0; left:-300px;">
+      <img src="" style="top:0; left:-300px;">
     </div>
 
     <!-- row 1 -->
     <div class="image-piece" id="piece4" style="top:50%; left:0;">
-      <img src="images/skillern.png" style="top:-100px; left:0;">
+      <img src="" style="top:-100px; left:0;">
     </div>
     <div class="image-piece" id="piece5" style="top:50%; left:25%;">
-      <img src="images/skillern.png" style="top:-100px; left:-100px;">
+      <img src="" style="top:-100px; left:-100px;">
     </div>
     <div class="image-piece" id="piece6" style="top:50%; left:50%;">
-      <img src="images/skillern.png" style="top:-100px; left:-200px;">
+      <img src="" style="top:-100px; left:-200px;">
     </div>
     <div class="image-piece" id="piece7" style="top:50%; left:75%;">
-      <img src="images/skillern.png" style="top:-100px; left:-300px;">
+      <img src="" style="top:-100px; left:-300px;">
     </div>
   </div>
   
@@ -147,7 +147,6 @@
       "images/sun.jpg",
     ];
 
-    const randomImage = images[Math.floor(Math.random() * images.length)];
 
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
@@ -218,7 +217,6 @@
         messageEl.style.color = "#D32F2F";
       }
   }
-
 
     function revealRandomPiece() {
       const remainingPieces = [...Array(8).keys()].filter(i => !revealedPieces.includes(i));

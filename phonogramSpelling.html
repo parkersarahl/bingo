@@ -21,22 +21,24 @@
     margin: 20px auto;
     border: 2px solid #333;
     overflow: hidden;
+    background-color: #f0f0f0;
   }
 
   .image-piece {
     position: absolute;
-    width: 25%;   /* 4 columns */
-    height: 50%;  /* 2 rows */
+    width: 200px;   /* 800px / 4 columns */
+    height: 300px;  /* 600px / 2 rows */
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.5s;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-sizing: border-box;
   }
 
   .image-piece img {
-    width: 100%;   /* full image width */
-    height: 100%;  /* full image height */
+    width: 800px;   /* full container width */
+    height: 600px;  /* full container height */
     object-fit: cover;
-    object-position: 0 0;
     position: absolute;
   }
 
@@ -73,15 +75,15 @@
 </div>
 
 <div id="image-container">
-  <!-- 8 pieces -->
+  <!-- 8 pieces in 2 rows, 4 columns -->
   <div class="image-piece" style="top:0; left:0;"><img src=""></div>
-  <div class="image-piece" style="top:0; left:25%;"><img src=""></div>
-  <div class="image-piece" style="top:0; left:50%;"><img src=""></div>
-  <div class="image-piece" style="top:0; left:75%;"><img src=""></div>
-  <div class="image-piece" style="top:50%; left:0;"><img src=""></div>
-  <div class="image-piece" style="top:50%; left:25%;"><img src=""></div>
-  <div class="image-piece" style="top:50%; left:50%;"><img src=""></div>
-  <div class="image-piece" style="top:50%; left:75%;"><img src=""></div>
+  <div class="image-piece" style="top:0; left:200px;"><img src=""></div>
+  <div class="image-piece" style="top:0; left:400px;"><img src=""></div>
+  <div class="image-piece" style="top:0; left:600px;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:0;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:200px;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:400px;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:600px;"><img src=""></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -122,6 +124,8 @@ const rows = 2;
 const cols = 4;
 const containerWidth = 800;
 const containerHeight = 600;
+const pieceWidth = containerWidth / cols;  // 200px
+const pieceHeight = containerHeight / rows; // 300px
 
 function shuffleArray(arr) {
   return arr.map(v => ({ value:v, sort: Math.random() }))
@@ -143,27 +147,32 @@ function initGame() {
     const row = Math.floor(idx / cols);
     const col = idx % cols;
 
-    // Each slice is 25% wide (cols=4) and 50% tall (rows=2)
-    const xPercent = -(col * (100 / cols));
-    const yPercent = -(row * (100 / rows));
+    // Calculate the offset to show the correct part of the image
+    const offsetX = -(col * pieceWidth);
+    const offsetY = -(row * pieceHeight);
 
-    img.style.objectPosition = `${xPercent}% ${yPercent}%`;
+    img.style.left = offsetX + "px";
+    img.style.top = offsetY + "px";
   });
 
   endButtons.style.display = "none";
+  messageEl.textContent = "Listen to the audio and type the phonogram you hear!";
+  messageEl.style.color = "#333";
   loadQuestion(currentIndex);
 }
 
 function loadQuestion(index) {
   if(index >= questionOrder.length){
     messageEl.textContent = "🎉 You completed all questions! 🎉";
+    messageEl.style.color = "#2E7D32";
     audioEl.src = "";
     endButtons.style.display = "block";
     return;
   }
   audioEl.src = questionOrder[index].src;
   answerEl.value = "";
-  messageEl.textContent = "";
+  messageEl.textContent = `Question ${index + 1} of ${Math.min(questionOrder.length, 8)}`;
+  messageEl.style.color = "#333";
   audioEl.play();
   answerEl.focus();
 }
@@ -181,7 +190,9 @@ function checkAnswer() {
     messageEl.style.color="#2E7D32";
     revealRandomPiece();
     currentIndex++;
-    if(currentIndex<8) setTimeout(()=>loadQuestion(currentIndex),800);
+    if(currentIndex < Math.min(questionOrder.length, 8)) {
+      setTimeout(()=>loadQuestion(currentIndex), 1500);
+    }
   } else {
     messageEl.textContent="❌ Try Again!";
     messageEl.style.color="#D32F2F";
@@ -196,17 +207,33 @@ function revealRandomPiece(){
   revealedPieces.push(randIdx);
   pieceEls[randIdx].style.opacity = 1;
 
-  if(revealedPieces.length===8){
+  if(revealedPieces.length === 8){
     celebrateWin();
-    messageEl.textContent="🎉 You revealed the full image! 🎉";
-    endButtons.style.display="block";
+    setTimeout(() => {
+      messageEl.textContent="🎉 You revealed the full image! Great job! 🎉";
+      messageEl.style.color="#2E7D32";
+      endButtons.style.display="block";
+    }, 1000);
   }
 }
 
-function startOver(){ initGame(); }
-function goHome(){ window.location.href="index.html"; }
-function celebrateWin(){ confetti({particleCount:200,spread:70,origin:{y:0.6}}); }
+function startOver(){ 
+  initGame(); 
+}
 
+function goHome(){ 
+  window.location.href="index.html"; 
+}
+
+function celebrateWin(){ 
+  confetti({
+    particleCount: 200,
+    spread: 70,
+    origin: { y: 0.6 }
+  }); 
+}
+
+// Initialize the game when page loads
 initGame();
 </script>
 </body>

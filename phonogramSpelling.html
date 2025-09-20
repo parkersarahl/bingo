@@ -121,6 +121,15 @@
     let questionOrder = [];
     let currentIndex = 0;
     let revealedPieces = [];
+    const images = [
+      "images/daisy.jpg",
+      "images/duck.jpg",
+      "images/flying_bird.jpg",
+      "images/lotus.jpg",
+      "images/sun.jpg",
+    ];
+
+    const randomImage = images[Math.floor(Math.random() * images.length)];
 
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
@@ -135,6 +144,8 @@
     }
 
     function initGame() {
+      currentImage = images[Math.floor(Math.random() * images.length)];
+
       questionOrder = shuffleArray([...questions]);
       currentIndex = 0;
       revealedPieces = [];
@@ -142,6 +153,9 @@
       for (let i = 0; i < 4; i++) {
         document.getElementById("piece" + i).style.opacity = 0;
       }
+      document.querySelectorAll(".image-piece img").forEach(img => {
+        img.src = currentImage;
+    });
       endButtons.style.display = "none";
       loadQuestion(currentIndex);
     }

@@ -30,15 +30,9 @@
     height: 300px;  /* 600px / 2 rows */
     overflow: hidden;
     opacity: 0;
-    transform: translate(0, 0);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: opacity 0.5s;
     border: 1px solid rgba(255,255,255,0.3);
     box-sizing: border-box;
-  }
-
-  .image-piece.revealed {
-    opacity: 1;
-    transform: translate(0, 0) !important;
   }
 
   .image-piece img {
@@ -109,12 +103,12 @@ const questions = [
 ];
 
 const images = [
-  "https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?w=800&h=600&fit=crop", // daisy
-  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=800&h=600&fit=crop", // duck
-  "https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&h=600&fit=crop", // flying bird
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=600&fit=crop", // lotus
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop", // sun
-  "https://images.unsplash.com/photo-1444927714506-8492d94b5ba0?w=800&h=600&fit=crop", // butterfly
+  "images/daisy.jpg",
+  "images/duck.jpg",
+  "images/flying_bird.jpg",
+  "images/lotus.jpg",
+  "images/sun.jpg",
+  "images/butterfly.jpg",
 ];
 
 let questionOrder = [];
@@ -141,45 +135,13 @@ function shuffleArray(arr) {
 
 function initGame() {
   const currentImage = images[Math.floor(Math.random()*images.length)];
-  console.log("Loading image:", currentImage); // Debug log
   questionOrder = shuffleArray([...questions]);
   currentIndex = 0;
   revealedPieces = [];
 
-  // Define sliding directions for each piece (from outside the container)
-  const slideDirections = [
-    { x: -300, y: -200 }, // top-left: slide from top-left
-    { x: 0, y: -400 },    // top-center-left: slide from top
-    { x: 0, y: -400 },    // top-center-right: slide from top
-    { x: 300, y: -200 },  // top-right: slide from top-right
-    { x: -300, y: 200 },  // bottom-left: slide from bottom-left
-    { x: 0, y: 400 },     // bottom-center-left: slide from bottom
-    { x: 0, y: 400 },     // bottom-center-right: slide from bottom
-    { x: 300, y: 200 }    // bottom-right: slide from bottom-right
-  ];
-
   pieceEls.forEach((piece, idx)=>{
-    piece.classList.remove('revealed');
     piece.style.opacity = 0;
-    
-    // Set initial position (off-screen)
-    const direction = slideDirections[idx];
-    piece.style.transform = `translate(${direction.x}px, ${direction.y}px)`;
-    
     const img = piece.querySelector("img");
-    
-    // Add error handling for images
-    img.onload = function() {
-      console.log("Image loaded successfully:", currentImage);
-    };
-    
-    img.onerror = function() {
-      console.error("Failed to load image:", currentImage);
-      // Fallback: show a colored background if image fails
-      piece.style.backgroundColor = '#ddd';
-      piece.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:14px;color:#666;">Image not found</div>';
-    };
-    
     img.src = currentImage;
 
     const row = Math.floor(idx / cols);
@@ -243,9 +205,7 @@ function revealRandomPiece(){
 
   const randIdx = remaining[Math.floor(Math.random()*remaining.length)];
   revealedPieces.push(randIdx);
-  
-  // Add revealed class to trigger sliding animation
-  pieceEls[randIdx].classList.add('revealed');
+  pieceEls[randIdx].style.opacity = 1;
 
   if(revealedPieces.length === 8){
     celebrateWin();

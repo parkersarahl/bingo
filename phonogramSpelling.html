@@ -12,14 +12,12 @@
       color: #333;
     }
 
-    h1 {
-      margin-bottom: 20px;
-    }
+    h1 { margin-bottom: 20px; }
 
     #image-container {
       position: relative;
-      width: 400px;   
-      height: 200px;   /* 2 rows of 100px */
+      width: 400px;
+      height: 200px; /* 2 rows of 100px */
       margin: 20px auto;
       border: 2px solid #333;
       overflow: hidden;
@@ -27,18 +25,15 @@
 
     .image-piece {
       position: absolute;
-      width: 25%;    /* 4 pieces per row */
-      height: 50%;   /* 2 rows */
+      width: 25%;  /* 4 pieces per row */
+      height: 50%; /* 2 rows */
       overflow: hidden;
       opacity: 0;
       transition: opacity 0.5s;
     }
 
     .image-piece img {
-      width: 400px;  /* full image width */
-      height: 400px; /* full image height */
-      object-fit: cover;
-      object-position: 0 0;
+      position: absolute;
     }
 
     button, input[type="text"] {
@@ -50,25 +45,11 @@
       cursor: pointer;
     }
 
-    button:hover {
-      transform: scale(1.05);
-    }
+    button:hover { transform: scale(1.05); }
 
-    #message {
-      font-weight: bold;
-      margin-top: 10px;
-      min-height: 24px;
-    }
-
-    #end-buttons {
-      display: none;
-      margin-top: 15px;
-    }
-
-    #start-over {
-      background-color: #2563eb;
-      color: white;
-    }
+    #message { font-weight: bold; margin-top: 10px; min-height: 24px; }
+    #end-buttons { display: none; margin-top: 15px; }
+    #start-over { background-color: #2563eb; color: white; }
   </style>
 </head>
 <body>
@@ -80,9 +61,7 @@
       <input type="text" id="answer" placeholder="Type your answer here" autofocus />
       <button onclick="checkAnswer()">Submit</button>
     </div>
-
     <div id="message"></div>
-
     <div id="end-buttons">
       <button id="start-over" onclick="startOver()">🔄 Start Over</button>
       <button onclick="goHome()">🏠 Return to Homepage</button>
@@ -90,21 +69,17 @@
   </div>
 
   <div id="image-container">
-    <!-- 8 pieces -->
     <div class="image-piece" style="top:0; left:0;"><img src=""></div>
     <div class="image-piece" style="top:0; left:25%;"><img src=""></div>
     <div class="image-piece" style="top:0; left:50%;"><img src=""></div>
     <div class="image-piece" style="top:0; left:75%;"><img src=""></div>
-
     <div class="image-piece" style="top:50%; left:0;"><img src=""></div>
     <div class="image-piece" style="top:50%; left:25%;"><img src=""></div>
     <div class="image-piece" style="top:50%; left:50%;"><img src=""></div>
     <div class="image-piece" style="top:50%; left:75%;"><img src=""></div>
-</div>
-
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
   <script>
     const questions = [
       { src: "audioClips/a.m4a", answer: "a" },
@@ -120,48 +95,54 @@
       { src: "audioClips/oo.m4a", answer: "oo" }
     ];
 
-    let questionOrder = [];
-    let currentIndex = 0;
-    let revealedPieces = [];
     const images = [
       "images/daisy.jpg",
       "images/duck.jpg",
       "images/flying_bird.jpg",
       "images/lotus.jpg",
-      "images/sun.jpg",
+      "images/sun.jpg"
     ];
 
+    let questionOrder = [];
+    let currentIndex = 0;
+    let revealedPieces = [];
     const audioEl = document.getElementById("audio");
     const answerEl = document.getElementById("answer");
     const messageEl = document.getElementById("message");
     const endButtons = document.getElementById("end-buttons");
     const pieceEls = document.querySelectorAll(".image-piece");
 
+    const containerWidth = 400;
+    const containerHeight = 200;
+    const rows = 2;
+    const cols = 4;
+
     function shuffleArray(arr) {
       return arr
-        .map(value => ({ value, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(({ value }) => value);
+        .map(v => ({ value: v, sort: Math.random() }))
+        .sort((a,b) => a.sort - b.sort)
+        .map(({value}) => value);
     }
 
     function initGame() {
-      currentImage = images[Math.floor(Math.random() * images.length)];
-
+      const currentImage = images[Math.floor(Math.random() * images.length)];
       questionOrder = shuffleArray([...questions]);
       currentIndex = 0;
       revealedPieces = [];
 
-      // Reset pieces
       pieceEls.forEach((piece, idx) => {
         piece.style.opacity = 0;
         const img = piece.querySelector("img");
         img.src = currentImage;
 
-        // Slice image using object position
-        const row = Math.floor(idx / 4);
-        const col = idx % 4;
+        // Each piece shows a slice of the full image
+        img.style.width = `${containerWidth * cols}px`;
+        img.style.height = `${containerHeight * rows}px`;
 
-        img.style.objectPosition = `${col * 25}% ${row * 50}%`;
+        const row = Math.floor(idx / cols);
+        const col = idx % cols;
+        img.style.left = `-${col * containerWidth}px`;
+        img.style.top = `-${row * containerHeight}px`;
       });
 
       endButtons.style.display = "none";
@@ -182,10 +163,8 @@
       answerEl.focus();
     }
 
-    answerEl.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        checkAnswer();
-      }
+    answerEl.addEventListener("keydown", e => {
+      if (e.key === "Enter") checkAnswer();
     });
 
     function checkAnswer() {
@@ -207,7 +186,7 @@
 
     function revealRandomPiece() {
       const remaining = [...Array(8).keys()].filter(i => !revealedPieces.includes(i));
-      if (remaining.length === 0) return;
+      if (!remaining.length) return;
 
       const randIdx = remaining[Math.floor(Math.random() * remaining.length)];
       revealedPieces.push(randIdx);
@@ -220,14 +199,8 @@
       }
     }
 
-    function startOver() {
-      initGame();
-    }
-
-    function goHome() {
-      window.location.href = "index.html";
-    }
-
+    function startOver() { initGame(); }
+    function goHome() { window.location.href = "index.html"; }
     function celebrateWin() {
       confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
     }

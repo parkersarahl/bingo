@@ -76,7 +76,7 @@
   <div id="game">
     <audio id="audio" controls></audio>
     <div>
-      <input type="text" id="answer" placeholder="Type your answer here" />
+      <input type="text" id="answer" placeholder="Type your answer here" autofocus />
       <button onclick="checkAnswer()">Submit</button>
     </div>
 
@@ -189,6 +189,9 @@
       answerEl.value = "";
       messageEl.textContent = "";
       audioEl.play();
+      const input = document.getElementById("answer");
+      input.value = "";
+      input.focus();
     }
 
     function checkAnswer() {

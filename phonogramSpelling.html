@@ -37,7 +37,8 @@
     .image-piece img {
       width: 400px;  /* full image width */
       height: 400px; /* full image height */
-      position: absolute;
+      object-fit: cover;
+      object-position: 0,0;
     }
 
     button, input[type="text"] {
@@ -160,8 +161,7 @@
         const row = Math.floor(idx / 4);
         const col = idx % 4;
         
-        img.style.top = `${-row * 50}%`;    // move image up for row
-        img.style.left = `${-col * 25}%`;   // move image left for col
+        img.style.objectPosition = `${-(col * 25)}% ${-(row * 50)}%`;
       });
 
       endButtons.style.display = "none";

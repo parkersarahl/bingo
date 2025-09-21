@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>School Games</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      color: #333;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section p {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 40px; /* space between buttons */
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .button-wrapper p {
+      margin: 0 0 8px 0;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    button {
+      width: 80px;
+      height: 80px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: whitesmoke;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 8px rgba(0,0,0,0.15);
+      background-color: #74ebd5;
+    }
+
+    .kinder-btn:before {
+      content: "K";
+      color: #FFD93D;
+      font-weight: bold;
+      font-size: 1.5em;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .first-grade-btn:before {
+      content: "1st";
+      color: #FFD93D;
+      font-weight: bold;
+      font-size: 1.5em;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎧 Phonograms 🎧</h1>
+
+  <div class="menu">
+    <div class="section">
+      <p>Pick a Game</p>
+      <div class="button-group">
+        <div class="button-wrapper">
+          <p>Kindergarten</p>
+          <button class="kinder-btn" onclick="location.href='kinderPhonograms.html'"></button>
+        </div>
+        <div class="button-wrapper">
+          <p>1st Grade</p>
+          <button class="first-grade-btn" onclick="location.href='FirstGradePhonograms.html'"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

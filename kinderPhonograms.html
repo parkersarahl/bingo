@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Kindergarten Phonogram Puzzle</title>
+<style>
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+    background: linear-gradient(to right, #74ebd5, #ACB6E5);
+    color: #333;
+  }
+
+  h1 { margin-bottom: 20px; }
+
+  #image-container {
+    position: relative;
+    width: 800px;
+    height: 600px; /* 2 rows */
+    margin: 20px auto;
+    border: 2px solid #333;
+    overflow: hidden;
+    background-color: #f0f0f0;
+  }
+
+  .image-piece {
+    position: absolute;
+    width: 200px;   /* 800px / 4 columns */
+    height: 300px;  /* 600px / 2 rows */
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-sizing: border-box;
+  }
+
+  .image-piece img {
+    width: 800px;   /* full container width */
+    height: 600px;  /* full container height */
+    object-fit: cover;
+    position: absolute;
+  }
+
+  button, input[type="text"] {
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    margin: 5px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
+  button:hover { transform: scale(1.05); }
+
+  #message { font-weight: bold; margin-top: 10px; min-height: 24px; }
+  #end-buttons { display: none; margin-top: 15px; }
+  #start-over { background-color: #2563eb; color: white; }
+</style>
+</head>
+<body>
+<h1>🎧 Kindergarten Phonogram Puzzle 🎧</h1>
+
+<div id="game">
+  <audio id="audio" controls></audio>
+  <div>
+    <input type="text" id="answer" placeholder="Type your answer here" autofocus />
+    <button onclick="checkAnswer()">Submit</button>
+  </div>
+  <div id="message"></div>
+  <div id="end-buttons">
+    <button id="start-over" onclick="startOver()">🔄 Start Over</button>
+    <button onclick="goHome()">🏠 Return to Homepage</button>
+  </div>
+</div>
+
+<div id="image-container">
+  <!-- 8 pieces in 2 rows, 4 columns -->
+  <div class="image-piece" style="top:0; left:0;"><img src=""></div>
+  <div class="image-piece" style="top:0; left:200px;"><img src=""></div>
+  <div class="image-piece" style="top:0; left:400px;"><img src=""></div>
+  <div class="image-piece" style="top:0; left:600px;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:0;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:200px;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:400px;"><img src=""></div>
+  <div class="image-piece" style="top:300px; left:600px;"><img src=""></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+const questions = [
+  { src: "audioClips/a.m4a", answer: "a" },
+  { src: "audioClips/c.m4a", answer: "c" },
+  { src: "audioClips/d.m4a", answer: "d" },
+  //{ src: "audioClips/ea.m4a", answer: "ea" },
+  //{ src: "audioClips/er.m4a", answer: "er" },
+  { src: "audioClips/g.m4a", answer: "g" },
+  { src: "audioClips/i.m4a", answer: "i" },
+  //{ src: "audioClips/ir.m4a", answer: "ir" },
+  { src: "audioClips/o.m4a", answer: "o" },
+  //{ src: "audioClips/oe.m4a", answer: "oe" },
+  //{ src: "audioClips/oo.m4a", answer: "oo" }, 
+  { src: "audioClips/m.m4a", answer: "m" },
+  { src: "audioClips/n.m4a", answer: "n" },
+  { src: "audioClips/r.m4a", answer: "r" },
+  { src: "audioClips/s.m4a", answer: "s" },
+  //{ src: "audioClips/b.m4a", answer: "b" },
+  //{ src: "audioClips/e.m4a", answer: "e" },
+  { src: "audioClips/f.m4a", answer: "f" },
+  //{ src: "audioClips/j.m4a", answer: "j" },
+  { src: "audioClips/l.m4a", answer: "l" },
+  //{ src: "audioClips/p.m4a", answer: "p" },
+  //{ src: "audioClips/t.m4a", answer: "t" },
+  //{ src: "audioClips/z.m4a", answer: "z" }
+];
+
+const images = [
+  "images/daisy.jpg",
+  "images/duck.jpg",
+  "images/flying_bird.jpg",
+  "images/lotus.jpg",
+  "images/sun.jpg",
+  "images/butterfly.jpg",
+];
+
+let questionOrder = [];
+let currentIndex = 0;
+let revealedPieces = [];
+const audioEl = document.getElementById("audio");
+const answerEl = document.getElementById("answer");
+const messageEl = document.getElementById("message");
+const endButtons = document.getElementById("end-buttons");
+const pieceEls = document.querySelectorAll(".image-piece");
+
+const rows = 2;
+const cols = 4;
+const containerWidth = 800;
+const containerHeight = 600;
+const pieceWidth = containerWidth / cols;  // 200px
+const pieceHeight = containerHeight / rows; // 300px
+
+function shuffleArray(arr) {
+  return arr.map(v => ({ value:v, sort: Math.random() }))
+            .sort((a,b)=>a.sort-b.sort)
+            .map(({value})=>value);
+}
+
+function initGame() {
+  const currentImage = images[Math.floor(Math.random()*images.length)];
+  questionOrder = shuffleArray([...questions]);
+  currentIndex = 0;
+  revealedPieces = [];
+
+  pieceEls.forEach((piece, idx)=>{
+    piece.style.opacity = 0;
+    const img = piece.querySelector("img");
+    img.src = currentImage;
+
+    const row = Math.floor(idx / cols);
+    const col = idx % cols;
+
+    // Calculate the offset to show the correct part of the image
+    const offsetX = -(col * pieceWidth);
+    const offsetY = -(row * pieceHeight);
+
+    img.style.left = offsetX + "px";
+    img.style.top = offsetY + "px";
+  });
+
+  endButtons.style.display = "none";
+  messageEl.textContent = "Listen to the audio and type the phonogram you hear!";
+  messageEl.style.color = "#333";
+  loadQuestion(currentIndex);
+}
+
+function loadQuestion(index) {
+  if(index >= questionOrder.length){
+    messageEl.textContent = "🎉 You completed all questions! 🎉";
+    messageEl.style.color = "#2E7D32";
+    audioEl.src = "";
+    endButtons.style.display = "block";
+    return;
+  }
+  audioEl.src = questionOrder[index].src;
+  answerEl.value = "";
+  messageEl.textContent = `Question ${index + 1} of ${Math.min(questionOrder.length, 8)}`;
+  messageEl.style.color = "#333";
+  audioEl.play();
+  answerEl.focus();
+}
+
+answerEl.addEventListener("keydown", e => {
+  if(e.key==="Enter") checkAnswer();
+});
+
+function checkAnswer() {
+  const userAnswer = answerEl.value.trim().toLowerCase();
+  const correctAnswer = questionOrder[currentIndex].answer.toLowerCase();
+
+  if(userAnswer===correctAnswer){
+    messageEl.textContent="✅ Correct!";
+    messageEl.style.color="#2E7D32";
+    revealRandomPiece();
+    currentIndex++;
+    if(currentIndex < Math.min(questionOrder.length, 8)) {
+      setTimeout(()=>loadQuestion(currentIndex), 1500);
+    }
+  } else {
+    messageEl.textContent="❌ Try Again!";
+    messageEl.style.color="#D32F2F";
+  }
+}
+
+function revealRandomPiece(){
+  const remaining = [...Array(8).keys()].filter(i=>!revealedPieces.includes(i));
+  if(!remaining.length) return;
+
+  const randIdx = remaining[Math.floor(Math.random()*remaining.length)];
+  revealedPieces.push(randIdx);
+  pieceEls[randIdx].style.opacity = 1;
+
+  if(revealedPieces.length === 8){
+    celebrateWin();
+    setTimeout(() => {
+      messageEl.textContent="🎉 You revealed the full image! Great job! 🎉";
+      messageEl.style.color="#2E7D32";
+      endButtons.style.display="block";
+    }, 1000);
+  }
+}
+
+function startOver(){ 
+  initGame(); 
+}
+
+function goHome(){ 
+  window.location.href="index.html"; 
+}
+
+function celebrateWin(){ 
+  confetti({
+    particleCount: 200,
+    spread: 70,
+    origin: { y: 0.6 }
+  }); 
+}
+
+// Initialize the game when page loads
+initGame();
+</script>
+</body>
+</html>

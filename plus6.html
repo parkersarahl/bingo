@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Plus 5 Bingo Game</title>
+  <title>Plus 6 Bingo Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
@@ -99,7 +99,7 @@
 </head>
 <body>
 
-  <h1>🎉 Plus 5 Bingo 🎉</h1>
+  <h1>🎉 Plus 6 Bingo 🎉</h1>
 
   <div id="board" class="board"></div>
 
@@ -119,10 +119,10 @@
 
   <script>
     const boardNumbers = [
-      [11, 13, 16, 8, 12],
-      [5, 17, 12, 11, 8],
+      [6, 13, 16, 8, 12],
+      [18, 17, 12, 11, 8],
       [14, 9, 0, 10, 7],
-      [17, 15, 12, 6, 5],
+      [17, 15, 12, 18, 5],
       [10, 14, 9, 16, 13],
     ];
 
@@ -133,7 +133,7 @@
 
     let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
     let buttons = [];
-    let a = 4, answer;
+    let a = 6, answer;
     let allEquations = [];
     let currentEquationIndex = 0;
 

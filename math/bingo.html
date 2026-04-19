@@ -4,110 +4,200 @@
   <meta charset="UTF-8">
   <title>Math Bingo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-      background: linear-gradient(to right, #74ebd5, #ACB6E5);
-      color: #333;
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 16px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .game-card {
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      padding: 28px 24px 32px;
+      width: 100%;
+      max-width: 420px;
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #222;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: -0.3px;
+      margin: 0 0 22px;
+      text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4);
     }
 
+    /* ── Board ── */
     .board {
       display: grid;
-      grid-template-columns: repeat(5, 60px);
-      grid-gap: 8px;
-      justify-content: center;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
       margin-bottom: 20px;
     }
 
     .cell {
-      width: 60px;
-      height: 60px;
+      aspect-ratio: 1;
       border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: bold;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
       cursor: pointer;
-      background: white;
-      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.93);
+      color: #1a1a2e;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
     .cell:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 8px rgba(0,0,0,0.15);
+      transform: translateY(-3px) scale(1.06);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
     }
 
-    .highlight { background: #FFD93D !important; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);    box-shadow: 0 4px 14px rgba(251,191,36,0.5); }
+      50%       { transform: scale(1.09); box-shadow: 0 10px 28px rgba(251,191,36,0.8); }
+    }
 
-    .marked, .free {
-      background: #6BCB77 !important;
-      color: white;
+    .highlight {
+      background: #fbbf24 !important;
+      color: #1a1a2e !important;
+      animation: pulse 0.85s ease-in-out infinite;
+    }
+
+    .marked {
+      background: linear-gradient(135deg, #10b981, #059669) !important;
+      color: white !important;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45) !important;
+    }
+
+    .free {
+      background: linear-gradient(135deg, #a78bfa, #7c3aed) !important;
+      color: white !important;
+      font-size: 0.8rem !important;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45) !important;
+    }
+
+    /* ── Question card ── */
+    #question-card {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 18px;
+      padding: 14px 20px;
+      margin-bottom: 14px;
     }
 
     #question {
-      font-size: 1.2rem;
-      margin: 10px 0;
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+      margin: 0;
     }
 
-    #message {
-      font-size: 1rem;
-      margin: 10px 0;
-      min-height: 20px;
-      font-weight: bold;
-    }
-
-    #endScreen button {
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      background: #4D96FF;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      margin: 5px;
-      box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-      transition: background 0.2s;
-    }
-
-    #endScreen button:hover { background: #2563eb; }
-
+    /* ── Answer buttons ── */
     #answerButtons {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 8px;
-      margin: 10px 0;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .success { color: #2E7D32; }
-    .error   { color: #D32F2F; }
-    .info    { color: #1976D2; }
+    .answer-btn {
+      min-width: 68px;
+      height: 50px;
+      padding: 0 18px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.45);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .answer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(99, 102, 241, 0.6);
+    }
+
+    /* ── Message ── */
+    #message {
+      font-size: 1rem;
+      font-weight: 700;
+      min-height: 24px;
+      margin-bottom: 6px;
+    }
+
+    .success { color: #34d399; }
+    .error   { color: #f87171; }
+    .info    { color: #93c5fd; }
+
+    /* ── End screen ── */
+    #endScreen { margin-top: 18px; }
+
+    #endMessage {
+      font-size: 1.5rem;
+      font-weight: 900;
+      color: #fff;
+      margin: 0 0 16px;
+    }
+
+    #endScreen button {
+      padding: 12px 26px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50px;
+      margin: 5px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    #endScreen button:hover {
+      background: rgba(255, 255, 255, 0.22);
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
+  <div class="game-card">
+    <h1 id="pageTitle">🎉 Math Bingo 🎉</h1>
 
-  <h1 id="pageTitle">🎉 Math Bingo 🎉</h1>
+    <div id="board" class="board"></div>
 
-  <div id="board" class="board"></div>
+    <div id="question-card">
+      <p id="question">Question:</p>
+    </div>
 
-  <h2 id="question">Question:</h2>
-  <div id="answerButtons"></div>
+    <div id="answerButtons"></div>
 
-  <div id="message"></div>
+    <div id="message"></div>
 
-  <div id="endScreen" style="display:none; margin-top:20px;">
-    <h2 id="endMessage"></h2>
-    <button onclick="playAgain()">🔄 Play Again</button>
-    <button onclick="goHome()">🏠 Return to Homepage</button>
+    <div id="endScreen" style="display:none;">
+      <p id="endMessage"></p>
+      <button onclick="playAgain()">🔄 Play Again</button>
+      <button onclick="goHome()">🏠 Home</button>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -137,7 +227,7 @@
 
     const boardNumbers = BOARDS[key];
     if (!boardNumbers) {
-      document.body.innerHTML = '<p style="font-size:1.5rem;margin-top:40px;">Unknown level. <a href="./">Go back</a>.</p>';
+      document.body.innerHTML = '<p style="font-size:1.5rem;margin-top:40px;color:white;">Unknown level. <a href="./" style="color:#93c5fd">Go back</a>.</p>';
       throw new Error('Unknown level: ' + key);
     }
 
@@ -221,9 +311,7 @@
       options.forEach(opt => {
         const btn = document.createElement('button');
         btn.textContent = opt;
-        btn.className = 'cell';
-        btn.style.width = '60px';
-        btn.style.height = '60px';
+        btn.className = 'answer-btn';
         btn.addEventListener('click', () => checkAnswer(opt));
         answerButtonsEl.appendChild(btn);
       });

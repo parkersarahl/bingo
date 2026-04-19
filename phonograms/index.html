@@ -2,110 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>School Games</title>
+  <title>Phonograms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-      background: linear-gradient(to right, #74ebd5, #ACB6E5);
-      color: #333;
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 16px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     h1 {
-      margin-bottom: 20px;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #fff;
+      margin: 0 0 36px;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.4);
     }
 
-    .menu {
+    .card-grid {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 20px;
-    }
-
-    .section {
-      margin-bottom: 30px;
-    }
-
-    .section p {
-      font-size: 1.2rem;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 40px; /* space between buttons */
-      justify-content: center;
+      gap: 20px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
-    .button-wrapper {
+    .nav-card {
+      width: 160px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 24px;
+      padding: 32px 20px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    .button-wrapper p {
-      margin: 0 0 8px 0;
-      font-size: 1rem;
-      font-weight: bold;
-    }
-
-    button {
-      width: 80px;
-      height: 80px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 12px;
+      gap: 14px;
       cursor: pointer;
-      background: whitesmoke;
-      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 8px rgba(0,0,0,0.15);
-      background-color: #74ebd5;
+    .nav-card:hover {
+      transform: translateY(-6px);
+      background: rgba(255,255,255,0.13);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    .kinder-btn:before {
-      content: "K";
-      color: #FFD93D;
-      font-weight: bold;
-      font-size: 1.5em;
-      margin-right: 8px;
-      vertical-align: middle;
+    .nav-card .icon {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #a78bfa;
+      line-height: 1;
     }
-    .first-grade-btn:before {
-      content: "1st";
-      color: #FFD93D;
-      font-weight: bold;
-      font-size: 1.5em;
-      margin-right: 8px;
-      vertical-align: middle;
+
+    .nav-card .label {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
     }
+
+    .home-link {
+      margin-top: 32px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .home-link:hover { color: rgba(255,255,255,0.8); }
   </style>
 </head>
 <body>
   <h1>🎧 Phonograms 🎧</h1>
 
-  <div class="menu">
-    <div class="section">
-      <p>Pick a Game</p>
-      <div class="button-group">
-        <div class="button-wrapper">
-          <p>Kindergarten</p>
-          <button class="kinder-btn" onclick="location.href='kinder.html'"></button>
-        </div>
-        <div class="button-wrapper">
-          <p>1st Grade</p>
-          <button class="first-grade-btn" onclick="location.href='first-grade.html'"></button>
-        </div>
-      </div>
-    </div>
+  <div class="card-grid">
+    <a class="nav-card" href="kinder.html">
+      <span class="icon">K</span>
+      <span class="label">Kindergarten</span>
+    </a>
+    <a class="nav-card" href="first-grade.html">
+      <span class="icon">1st</span>
+      <span class="label">1st Grade</span>
+    </a>
   </div>
+
+  <a class="home-link" href="../index.html">🏠 Back to School Games</a>
 </body>
 </html>

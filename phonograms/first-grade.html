@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kindergarten Phonogram Puzzle</title>
+<title>Phonogram Puzzle</title>
 <style>
   body {
     font-family: "Segoe UI", Arial, sans-serif;
@@ -59,7 +59,7 @@
 </style>
 </head>
 <body>
-<h1>🎧 Kindergarten Phonogram Puzzle 🎧</h1>
+<h1>🎧 Phonogram Puzzle 🎧</h1>
 
 <div id="game">
   <audio id="audio" controls></audio>
@@ -92,26 +92,26 @@ const questions = [
   { src: "audioClips/a.m4a", answer: "a" },
   { src: "audioClips/c.m4a", answer: "c" },
   { src: "audioClips/d.m4a", answer: "d" },
-  //{ src: "audioClips/ea.m4a", answer: "ea" },
-  //{ src: "audioClips/er.m4a", answer: "er" },
+  { src: "audioClips/ea.m4a", answer: "ea" },
+  { src: "audioClips/er.m4a", answer: "er" },
   { src: "audioClips/g.m4a", answer: "g" },
   { src: "audioClips/i.m4a", answer: "i" },
-  //{ src: "audioClips/ir.m4a", answer: "ir" },
+  { src: "audioClips/ir.m4a", answer: "ir" },
   { src: "audioClips/o.m4a", answer: "o" },
-  //{ src: "audioClips/oe.m4a", answer: "oe" },
-  //{ src: "audioClips/oo.m4a", answer: "oo" }, 
+  { src: "audioClips/oe.m4a", answer: "oe" },
+  { src: "audioClips/oo.m4a", answer: "oo" }, 
   { src: "audioClips/m.m4a", answer: "m" },
   { src: "audioClips/n.m4a", answer: "n" },
   { src: "audioClips/r.m4a", answer: "r" },
   { src: "audioClips/s.m4a", answer: "s" },
-  //{ src: "audioClips/b.m4a", answer: "b" },
-  //{ src: "audioClips/e.m4a", answer: "e" },
+  { src: "audioClips/b.m4a", answer: "b" },
+  { src: "audioClips/e.m4a", answer: "e" },
   { src: "audioClips/f.m4a", answer: "f" },
-  //{ src: "audioClips/j.m4a", answer: "j" },
-  //{ src: "audioClips/l.m4a", answer: "l" },
-  //{ src: "audioClips/p.m4a", answer: "p" },
-  //{ src: "audioClips/t.m4a", answer: "t" },l ad
-  //{ src: "audioClips/z.m4a", answer: "z" }
+  { src: "audioClips/j.m4a", answer: "j" },
+  { src: "audioClips/l.m4a", answer: "l" },
+  { src: "audioClips/p.m4a", answer: "p" },
+  { src: "audioClips/t.m4a", answer: "t" },
+  { src: "audioClips/z.m4a", answer: "z" }
 ];
 
 const images = [
@@ -235,7 +235,7 @@ function startOver(){
 }
 
 function goHome(){ 
-  window.location.href="index.html"; 
+  window.location.href="../index.html";
 }
 
 function celebrateWin(){ 
@@ -244,7 +244,7 @@ function celebrateWin(){
     spread: 70,
     origin: { y: 0.6 }
   }); 
-  const hooray = new Audio("audioClips/KinderHooray.m4a");
+  const hooray = new Audio("audioClips/FirstGradeHooray.m4a");
   hooray.play();
 }
 

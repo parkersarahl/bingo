@@ -2,75 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Phonogram Puzzle</title>
+<title>1st Grade Phonogram Puzzle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+  *, *::before, *::after { box-sizing: border-box; }
+
   body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
-    background: linear-gradient(to right, #74ebd5, #ACB6E5);
-    color: #333;
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 32px 16px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
   }
 
-  h1 { margin-bottom: 20px; }
+  h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin: 0 0 24px;
+    text-shadow: 0 2px 24px rgba(0,0,0,0.4);
+  }
+
+  .controls-card {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  audio { width: 100%; border-radius: 8px; }
+
+  input[type="text"] {
+    padding: 14px 20px;
+    font-size: 1.3rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    border-radius: 50px;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    outline: none;
+    text-align: center;
+    width: 220px;
+    transition: border-color 0.2s;
+  }
+
+  input[type="text"]::placeholder { color: rgba(255,255,255,0.4); }
+  input[type="text"]:focus { border-color: rgba(255,255,255,0.5); }
+
+  .input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+  button {
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: white;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(99,102,241,0.6);
+  }
+
+  #message {
+    font-size: 1.1rem;
+    font-weight: 700;
+    min-height: 28px;
+  }
+
+  #end-buttons { display: none; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  #start-over {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+  }
+
+  #end-buttons button:last-child {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: none;
+  }
 
   #image-container {
     position: relative;
     width: 800px;
-    height: 600px; /* 2 rows */
-    margin: 20px auto;
-    border: 2px solid #333;
+    height: 600px;
+    margin: 0 auto;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
     overflow: hidden;
-    background-color: #f0f0f0;
+    background-color: rgba(255,255,255,0.05);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
   }
 
   .image-piece {
     position: absolute;
-    width: 200px;   /* 800px / 4 columns */
-    height: 300px;  /* 600px / 2 rows */
+    width: 200px;
+    height: 300px;
     overflow: hidden;
     opacity: 0;
     transition: opacity 0.5s;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
     box-sizing: border-box;
   }
 
   .image-piece img {
-    width: 800px;   /* full container width */
-    height: 600px;  /* full container height */
+    width: 800px;
+    height: 600px;
     object-fit: cover;
     position: absolute;
   }
-
-  button, input[type="text"] {
-    padding: 10px 15px;
-    font-size: 1.2rem;
-    margin: 5px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-  }
-
-  button:hover { transform: scale(1.05); }
-
-  #message { font-weight: bold; margin-top: 10px; min-height: 24px; }
-  #end-buttons { display: none; margin-top: 15px; }
-  #start-over { background-color: #2563eb; color: white; }
 </style>
 </head>
 <body>
 <h1>🎧 Phonogram Puzzle 🎧</h1>
 
-<div id="game">
+<div class="controls-card" id="game">
   <audio id="audio" controls></audio>
-  <div>
-    <input type="text" id="answer" placeholder="Type your answer here" autofocus />
+  <div class="input-row">
+    <input type="text" id="answer" placeholder="Type phonogram…" autofocus />
     <button onclick="checkAnswer()">Submit</button>
   </div>
   <div id="message"></div>
-  <div id="end-buttons">
+  <div id="end-buttons" style="display:none;">
     <button id="start-over" onclick="startOver()">🔄 Start Over</button>
-    <button onclick="goHome()">🏠 Return to Homepage</button>
+    <button onclick="goHome()">🏠 Home</button>
   </div>
 </div>
 
@@ -225,7 +301,7 @@ function revealRandomPiece(){
     setTimeout(() => {
       messageEl.textContent="🎉 You revealed the full image! Great job! 🎉";
       messageEl.style.color="#2E7D32";
-      endButtons.style.display="block";
+      endButtons.style.display="flex";
     }, 1000);
   }
 }

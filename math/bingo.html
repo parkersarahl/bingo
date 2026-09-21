@@ -203,6 +203,9 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
+    const bingoSound = new Audio('../audioClips/bingo.m4a');
+    bingoSound.preload = 'auto';
+
     const BOARDS = {
       plus0:  [[11,8,12,9,11],[6,10,1,4,10],[12,5,0,8,2],[7,0,7,2,3],[4,9,3,6,1]],
       plus1:  [[11,8,12,9,11],[6,10,1,4,10],[12,5,0,8,2],[7,13,7,2,3],[4,9,3,6,1]],
@@ -226,21 +229,58 @@
       minus8: [[11,8,12,9,11],[6,10,1,4,10],[12,5,0,8,2],[7,5,0,2,3],[4,9,3,6,1]],
       minus9: [[11,8,12,9,11],[6,10,1,4,10],[12,5,0,8,2],[7,5,0,2,3],[4,9,3,6,1]],
       minus10:[[11,8,12,9,11],[6,10,1,4,10],[12,5,0,8,2],[7,5,0,2,3],[4,9,3,6,1]],
-      mixed:  [[15,8,12,5,18],[2,10,7,16,11],[20,4,0,9,13],[6,17,3,10,1],[14,9,19,11,0]],
     };
+
+    const MIXED_MAX = 10;
 
     const params = new URLSearchParams(location.search);
     const op = params.get('op') || 'plus';
     const n  = parseInt(params.get('n') || '0');
-    const key = op === 'mixed' ? 'mixed' : `${op}${n}`;
+    const isMixedAddition = op === 'mixed';
+    const isMixedSubtraction = op === 'mixed-minus';
+    const key = isMixedAddition || isMixedSubtraction ? op : `${op}${n}`;
 
-    const boardNumbers = BOARDS[key];
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
+    }
+
+    function createMixedBoard(maxResult) {
+      const numbers = Array.from({ length: maxResult + 1 }, (_, value) => value);
+      while (numbers.length < 24) {
+        numbers.push(Math.floor(Math.random() * (maxResult + 1)));
+      }
+      shuffle(numbers);
+
+      const board = [];
+      let numberIndex = 0;
+      for (let i = 0; i < 5; i++) {
+        board[i] = [];
+        for (let j = 0; j < 5; j++) {
+          board[i][j] = (i === 2 && j === 2) ? 0 : numbers[numberIndex++];
+        }
+      }
+      return board;
+    }
+
+    const boardNumbers = isMixedAddition
+      ? createMixedBoard(MIXED_MAX * 2)
+      : isMixedSubtraction
+        ? createMixedBoard(MIXED_MAX)
+        : BOARDS[key];
     if (!boardNumbers) {
       document.body.innerHTML = '<p style="font-size:1.5rem;margin-top:40px;color:white;">Unknown level. <a href="./" style="color:#93c5fd">Go back</a>.</p>';
       throw new Error('Unknown level: ' + key);
     }
 
-    const label = op === 'mixed' ? 'Mixed Addition' : op === 'plus' ? `Plus ${n}` : `Minus ${n}`;
+    const label = isMixedAddition
+      ? 'Mixed Addition'
+      : isMixedSubtraction
+        ? 'Mixed Subtraction'
+        : op === 'plus' ? `Plus ${n}` : `Minus ${n}`;
     document.title = `${label} Bingo`;
     document.getElementById('pageTitle').textContent = `🎉 ${label} Bingo 🎉`;
 
@@ -287,9 +327,15 @@
         for (let b = n; b <= n + 12; b++) {
           allEquations.push({ question: `What is ${b} - ${n}?`, answer: b - n });
         }
+      } else if (isMixedSubtraction) {
+        for (let a = 0; a <= MIXED_MAX; a++) {
+          for (let b = 0; b <= a; b++) {
+            allEquations.push({ question: `What is ${a} - ${b}?`, answer: a - b });
+          }
+        }
       } else {
-        for (let a = 0; a <= 10; a++) {
-          for (let b = 0; b <= 10; b++) {
+        for (let a = 0; a <= MIXED_MAX; a++) {
+          for (let b = 0; b <= MIXED_MAX; b++) {
             allEquations.push({ question: `What is ${a} + ${b}?`, answer: a + b });
           }
         }
@@ -379,6 +425,8 @@
 
     function celebrateWin() {
       confetti({ particleCount: 200, spread: 70, origin: { y: 0.6 } });
+      bingoSound.currentTime = 0;
+      bingoSound.play().catch(() => {});
       endGame('🎉 BINGO! You win! 🎉');
     }
 

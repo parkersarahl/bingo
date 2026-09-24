@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>1st Grade Math Facts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 16px;
+      background: linear-gradient(135deg, #14213d 0%, #1f4e5f 50%, #287271 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .game-card {
+      width: 100%;
+      max-width: 560px;
+      padding: 32px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 30px;
+      color: #fff;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2.1rem;
+      font-weight: 900;
+    }
+
+    .subtitle {
+      margin: 0 0 24px;
+      color: rgba(255,255,255,0.72);
+      font-weight: 700;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.78);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .progress-track {
+      height: 18px;
+      padding: 3px;
+      margin-bottom: 28px;
+      background: rgba(0,0,0,0.24);
+      border-radius: 99px;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #f9c74f, #f9844a);
+      border-radius: inherit;
+      transition: width 0.3s ease;
+    }
+
+    .question-card {
+      padding: 24px 18px;
+      margin-bottom: 18px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 22px;
+    }
+
+    .question {
+      margin: 0;
+      font-size: clamp(2.4rem, 12vw, 4rem);
+      font-weight: 900;
+      letter-spacing: 0.03em;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    input {
+      width: 150px;
+      height: 62px;
+      border: 3px solid rgba(255,255,255,0.4);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.95);
+      color: #14213d;
+      font: 900 1.8rem 'Nunito', sans-serif;
+      text-align: center;
+    }
+
+    input:focus {
+      outline: 3px solid #f9c74f;
+      outline-offset: 3px;
+    }
+
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 0 24px;
+      background: #f9c74f;
+      color: #14213d;
+      font: 900 1.05rem 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: #ffd166;
+    }
+
+    #message {
+      min-height: 28px;
+      margin: 16px 0 0;
+      font-weight: 800;
+    }
+
+    .success { color: #b7efc5; }
+    .error { color: #ffb4a2; }
+
+    #prize {
+      display: none;
+      margin-top: 22px;
+      padding: 20px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 22px;
+    }
+
+    #prize img {
+      width: 130px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    #prize h2 {
+      margin: 12px 0 4px;
+      font-size: 1.7rem;
+    }
+
+    #prize p { margin: 0 0 14px; font-weight: 700; }
+
+    .secondary {
+      min-height: 44px;
+      padding: 0 18px;
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .home-link {
+      display: inline-block;
+      margin-top: 24px;
+      color: rgba(255,255,255,0.62);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .home-link:hover { color: #fff; }
+
+    @media (max-width: 420px) {
+      .game-card { padding: 24px 18px; }
+      form { flex-direction: column; align-items: center; }
+      input { width: 100%; }
+      form button { min-height: 54px; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game-card">
+    <h1>Math Facts Adventure</h1>
+    <p class="subtitle">Solve 12 facts to reach the goal!</p>
+
+    <div class="progress-label">
+      <span>Goal progress</span>
+      <span id="progressText">0 of 12</span>
+    </div>
+    <div class="progress-track" aria-label="Goal progress">
+      <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <section class="question-card" aria-live="polite">
+      <p id="question" class="question"></p>
+    </section>
+
+    <form id="answerForm">
+      <input id="answer" type="number" inputmode="numeric" autocomplete="off" aria-label="Your answer" required>
+      <button type="submit">Check Answer</button>
+    </form>
+    <p id="message" aria-live="polite"></p>
+
+    <section id="prize" aria-live="polite">
+      <img id="prizeImage" src="../images/sun.jpg" alt="Your prize">
+      <h2>🎉 You reached the goal!</h2>
+      <p>You earned a prize. Great math work!</p>
+      <button id="nextRound" class="secondary" type="button">Start Another Round</button>
+    </section>
+
+    <a class="home-link" href="../first-grade.html">Back to 1st Grade Games</a>
+  </main>
+
+  <audio id="hooray" src="../audioClips/FirstGradeHooray.m4a" preload="auto"></audio>
+
+  <script>
+    const TOTAL_QUESTIONS = 12;
+    const hooray = document.getElementById('hooray');
+    hooray.volume = 0.5;
+    const questionEl = document.getElementById('question');
+    const answerEl = document.getElementById('answer');
+    const form = document.getElementById('answerForm');
+    const messageEl = document.getElementById('message');
+    const progressText = document.getElementById('progressText');
+    const progressBar = document.getElementById('progressBar');
+    const prizeEl = document.getElementById('prize');
+    const prizeImage = document.getElementById('prizeImage');
+    const nextRound = document.getElementById('nextRound');
+    const prizes = ['../images/sun.jpg', '../images/butterfly.jpg', '../images/duck.jpg', '../images/lotus.jpg'];
+
+    let correctAnswers = 0;
+    let currentAnswer = 0;
+    let currentQuestion = '';
+
+    function randomFact() {
+      const first = Math.floor(Math.random() * 11);
+      const second = Math.floor(Math.random() * 11);
+      const addition = Math.random() < 0.5;
+      if (addition) return { text: `${first} + ${second} =`, answer: first + second };
+      const larger = Math.max(first, second);
+      const smaller = Math.min(first, second);
+      return { text: `${larger} - ${smaller} =`, answer: larger - smaller };
+    }
+
+    function showQuestion() {
+      const fact = randomFact();
+      currentQuestion = fact.text;
+      currentAnswer = fact.answer;
+      questionEl.textContent = currentQuestion;
+      answerEl.value = '';
+      answerEl.focus();
+    }
+
+    function updateProgress() {
+      progressText.textContent = `${correctAnswers} of ${TOTAL_QUESTIONS}`;
+      progressBar.style.width = `${(correctAnswers / TOTAL_QUESTIONS) * 100}%`;
+    }
+
+    function finishRound() {
+      prizeImage.src = prizes[Math.floor(Math.random() * prizes.length)];
+      prizeEl.style.display = 'block';
+      form.style.display = 'none';
+      messageEl.textContent = '';
+      hooray.currentTime = 0;
+      hooray.play().catch(() => {});
+    }
+
+    function startRound() {
+      correctAnswers = 0;
+      prizeEl.style.display = 'none';
+      form.style.display = 'flex';
+      messageEl.textContent = '';
+      messageEl.className = '';
+      updateProgress();
+      showQuestion();
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const answer = Number(answerEl.value);
+      if (answer === currentAnswer) {
+        correctAnswers++;
+        updateProgress();
+        if (correctAnswers === TOTAL_QUESTIONS) {
+          finishRound();
+        } else {
+          messageEl.textContent = 'Correct! You moved closer to the goal!';
+          messageEl.className = 'success';
+          showQuestion();
+        }
+      } else {
+        messageEl.textContent = 'Not quite. Try again!';
+        messageEl.className = 'error';
+        answerEl.select();
+      }
+    });
+
+    nextRound.addEventListener('click', startRound);
+    startRound();
+  </script>
+</body>
+</html>

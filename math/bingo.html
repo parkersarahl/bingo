@@ -62,6 +62,11 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
+    .equation-cell {
+      font-size: 0.9rem;
+      padding: 4px;
+    }
+
     .cell:hover {
       transform: translateY(-3px) scale(1.06);
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
@@ -240,6 +245,7 @@
     const isMixedSubtraction = op === 'mixed-minus';
     const isWithin100Addition = op === 'within100-plus';
     const isWithin100Subtraction = op === 'within100-minus';
+    const isEquationMatch = isWithin100Addition || isWithin100Subtraction;
     const key = isMixedAddition || isMixedSubtraction ? op : `${op}${n}`;
 
     function shuffle(items) {
@@ -272,10 +278,10 @@
       ? createMixedBoard(MIXED_MAX * 2)
       : isMixedSubtraction
         ? createMixedBoard(MIXED_MAX)
-        : isWithin100Addition || isWithin100Subtraction
-          ? createMixedBoard(100)
+        : isEquationMatch
+          ? null
         : BOARDS[key];
-    if (!boardNumbers) {
+    if (!boardNumbers && !isEquationMatch) {
       document.body.innerHTML = '<p style="font-size:1.5rem;margin-top:40px;color:white;">Unknown level. <a href="./" style="color:#93c5fd">Go back</a>.</p>';
       throw new Error('Unknown level: ' + key);
     }
@@ -285,9 +291,9 @@
       : isMixedSubtraction
         ? 'Mixed Subtraction'
         : isWithin100Addition
-          ? 'Addition Within 100'
+          ? 'Addition Match Within 100'
           : isWithin100Subtraction
-            ? 'Subtraction Within 100'
+            ? 'Subtraction Match Within 100'
         : op === 'plus' ? `Plus ${n}` : `Minus ${n}`;
     document.title = `${label} Bingo`;
     document.getElementById('pageTitle').textContent = `🎉 ${label} Bingo 🎉`;
@@ -297,6 +303,7 @@
     const answerButtonsEl = document.getElementById('answerButtons');
     const messageEl       = document.getElementById('message');
 
+    let equationBoard = null;
     let marks = Array.from({ length: 5 }, () => Array(5).fill(false));
     let buttons = [];
     let allEquations = [];
@@ -308,6 +315,24 @@
       messageEl.className = type;
     }
 
+    function createEquationBoard() {
+      const equationsByAnswer = new Map();
+      allEquations.forEach(eq => {
+        if (!equationsByAnswer.has(eq.answer)) equationsByAnswer.set(eq.answer, eq);
+      });
+
+      const entries = shuffle(Array.from(equationsByAnswer.values())).slice(0, 24);
+      const board = [];
+      let entryIndex = 0;
+      for (let i = 0; i < 5; i++) {
+        board[i] = [];
+        for (let j = 0; j < 5; j++) {
+          board[i][j] = (i === 2 && j === 2) ? null : entries[entryIndex++];
+        }
+      }
+      return board;
+    }
+
     function createBoard() {
       boardEl.innerHTML = '';
       for (let i = 0; i < 5; i++) {
@@ -315,7 +340,13 @@
         for (let j = 0; j < 5; j++) {
           const btn = document.createElement('button');
           btn.className = 'cell';
-          btn.textContent = (i === 2 && j === 2) ? 'FREE' : boardNumbers[i][j];
+          const cell = equationBoard ? equationBoard[i][j] : boardNumbers[i][j];
+          if (equationBoard && cell) {
+            btn.classList.add('equation-cell');
+            btn.textContent = cell.question.replace('What is ', '').replace('?', '');
+          } else {
+            btn.textContent = (i === 2 && j === 2) ? 'FREE' : cell;
+          }
           btn.addEventListener('click', () => markCell(i, j));
           boardEl.appendChild(btn);
           buttons[i][j] = btn;
@@ -377,7 +408,7 @@
 
       answerButtonsEl.innerHTML = '';
       const options = [answer];
-      const optionMax = isWithin100Addition || isWithin100Subtraction ? 100 : 22;
+      const optionMax = isEquationMatch ? 100 : 22;
       while (options.length < 4) {
         const rand = Math.floor(Math.random() * (optionMax + 1));
         if (!options.includes(rand)) options.push(rand);
@@ -399,7 +430,8 @@
         const available = [];
         for (let i = 0; i < 5; i++) {
           for (let j = 0; j < 5; j++) {
-            if (boardNumbers[i][j] === answer && !marks[i][j] && !(i === 2 && j === 2)) {
+            const cellAnswer = equationBoard ? equationBoard[i][j]?.answer : boardNumbers[i][j];
+            if (cellAnswer === answer && !marks[i][j] && !(i === 2 && j === 2)) {
               available.push([i, j]);
             }
           }
@@ -459,13 +491,18 @@
 
     function playAgain() { location.reload(); }
     function goHome() {
-      window.location.href = isWithin100Addition || isWithin100Subtraction
+      window.location.href = isEquationMatch
         ? 'second-grade.html'
         : '../index.html';
     }
 
-    createBoard();
     generateEquations();
+    if (isEquationMatch) {
+      equationBoard = createEquationBoard();
+      allEquations = equationBoard.flat().filter(Boolean);
+      shuffle(allEquations);
+    }
+    createBoard();
     newQuestion();
   </script>
   <script defer src="/_vercel/insights/script.js"></script>

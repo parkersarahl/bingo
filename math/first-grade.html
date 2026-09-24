@@ -231,11 +231,12 @@
     const prizeEl = document.getElementById('prize');
     const prizeImage = document.getElementById('prizeImage');
     const nextRound = document.getElementById('nextRound');
-    const prizes = ['../images/sun.jpg', '../images/butterfly.jpg', '../images/duck.jpg', '../images/lotus.jpg'];
+    const prizes = ['../images/sun.jpg', '../images/butterfly.jpg', '../images/duck.jpg', '../images/lotus.jpg', '../images/babyseaturtle.jpg'];
 
     let correctAnswers = 0;
     let currentAnswer = 0;
     let currentQuestion = '';
+    let prizeIndex = 0;
 
     function randomFact() {
       const first = Math.floor(Math.random() * 11);
@@ -262,7 +263,8 @@
     }
 
     function finishRound() {
-      prizeImage.src = prizes[Math.floor(Math.random() * prizes.length)];
+      prizeImage.src = prizes[prizeIndex];
+      prizeIndex = (prizeIndex + 1) % prizes.length;
       prizeEl.style.display = 'block';
       form.style.display = 'none';
       messageEl.textContent = '';

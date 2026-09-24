@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>1st Grade Math Facts</title>
+  <title>2nd Grade Math Facts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -185,8 +185,8 @@
 </head>
 <body>
   <main class="game-card">
-    <h1>Math Facts Adventure</h1>
-    <p class="subtitle">Solve 12 facts to reach the goal!</p>
+    <h1>2nd Grade Math Facts</h1>
+    <p class="subtitle">Solve 12 addition and subtraction facts within 100!</p>
 
     <div class="progress-label">
       <span>Goal progress</span>
@@ -213,7 +213,7 @@
       <button id="nextRound" class="secondary" type="button">Start Another Round</button>
     </section>
 
-    <a class="home-link" href="../first-grade.html">Back to 1st Grade Games</a>
+    <a class="home-link" href="../second-grade.html">Back to 2nd Grade Games</a>
   </main>
 
   <audio id="hooray" src="../audioClips/KinderHooray.m4a" preload="auto"></audio>
@@ -235,23 +235,22 @@
 
     let correctAnswers = 0;
     let currentAnswer = 0;
-    let currentQuestion = '';
 
     function randomFact() {
-      const first = Math.floor(Math.random() * 11);
-      const second = Math.floor(Math.random() * 11);
       const addition = Math.random() < 0.5;
-      if (addition) return { text: `${first} + ${second} =`, answer: first + second };
-      const larger = Math.max(first, second);
-      const smaller = Math.min(first, second);
-      return { text: `${larger} - ${smaller} =`, answer: larger - smaller };
+      const first = Math.floor(Math.random() * 101);
+      const second = addition
+        ? Math.floor(Math.random() * (101 - first))
+        : Math.floor(Math.random() * (first + 1));
+      return addition
+        ? { text: `${first} + ${second} =`, answer: first + second }
+        : { text: `${first} - ${second} =`, answer: first - second };
     }
 
     function showQuestion() {
       const fact = randomFact();
-      currentQuestion = fact.text;
       currentAnswer = fact.answer;
-      questionEl.textContent = currentQuestion;
+      questionEl.textContent = fact.text;
       answerEl.value = '';
       answerEl.focus();
     }

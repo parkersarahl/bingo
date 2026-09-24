@@ -238,6 +238,8 @@
     const n  = parseInt(params.get('n') || '0');
     const isMixedAddition = op === 'mixed';
     const isMixedSubtraction = op === 'mixed-minus';
+    const isWithin100Addition = op === 'within100-plus';
+    const isWithin100Subtraction = op === 'within100-minus';
     const key = isMixedAddition || isMixedSubtraction ? op : `${op}${n}`;
 
     function shuffle(items) {
@@ -270,6 +272,8 @@
       ? createMixedBoard(MIXED_MAX * 2)
       : isMixedSubtraction
         ? createMixedBoard(MIXED_MAX)
+        : isWithin100Addition || isWithin100Subtraction
+          ? createMixedBoard(100)
         : BOARDS[key];
     if (!boardNumbers) {
       document.body.innerHTML = '<p style="font-size:1.5rem;margin-top:40px;color:white;">Unknown level. <a href="./" style="color:#93c5fd">Go back</a>.</p>';
@@ -280,6 +284,10 @@
       ? 'Mixed Addition'
       : isMixedSubtraction
         ? 'Mixed Subtraction'
+        : isWithin100Addition
+          ? 'Addition Within 100'
+          : isWithin100Subtraction
+            ? 'Subtraction Within 100'
         : op === 'plus' ? `Plus ${n}` : `Minus ${n}`;
     document.title = `${label} Bingo`;
     document.getElementById('pageTitle').textContent = `🎉 ${label} Bingo 🎉`;
@@ -319,7 +327,19 @@
 
     function generateEquations() {
       allEquations = [];
-      if (op === 'plus') {
+      if (isWithin100Addition) {
+        for (let a = 0; a <= 100; a++) {
+          for (let b = 0; b <= 100 - a; b++) {
+            allEquations.push({ question: `What is ${a} + ${b}?`, answer: a + b });
+          }
+        }
+      } else if (isWithin100Subtraction) {
+        for (let a = 0; a <= 100; a++) {
+          for (let b = 0; b <= a; b++) {
+            allEquations.push({ question: `What is ${a} - ${b}?`, answer: a - b });
+          }
+        }
+      } else if (op === 'plus') {
         for (let b = 0; b <= 12; b++) {
           allEquations.push({ question: `What is ${n} + ${b}?`, answer: n + b });
         }
@@ -357,8 +377,9 @@
 
       answerButtonsEl.innerHTML = '';
       const options = [answer];
+      const optionMax = isWithin100Addition || isWithin100Subtraction ? 100 : 22;
       while (options.length < 4) {
-        const rand = Math.floor(Math.random() * 22);
+        const rand = Math.floor(Math.random() * (optionMax + 1));
         if (!options.includes(rand)) options.push(rand);
       }
       options.sort(() => Math.random() - 0.5);
@@ -437,7 +458,11 @@
     }
 
     function playAgain() { location.reload(); }
-    function goHome() { window.location.href = '../index.html'; }
+    function goHome() {
+      window.location.href = isWithin100Addition || isWithin100Subtraction
+        ? 'second-grade.html'
+        : '../index.html';
+    }
 
     createBoard();
     generateEquations();

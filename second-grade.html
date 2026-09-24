@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2nd Grade Games</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 40px 16px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #fff;
+      margin: 0 0 44px;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.4);
+      text-align: center;
+    }
+
+    .card-grid {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-card {
+      width: 200px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 24px;
+      padding: 32px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-6px);
+      background: rgba(255,255,255,0.13);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .nav-card .icon {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: #a78bfa;
+      line-height: 1;
+    }
+
+    .nav-card .label {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+    }
+
+    .home-link {
+      margin-top: 32px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .home-link:hover { color: rgba(255,255,255,0.8); }
+  </style>
+</head>
+<body>
+  <h1>2nd Grade Games</h1>
+
+  <div class="card-grid">
+    <a class="nav-card" href="math/second-grade.html">
+      <span class="icon">+</span>
+      <span class="label">Math Bingo</span>
+    </a>
+  </div>
+
+  <a class="home-link" href="index.html">Back to School Games</a>
+</body>
+</html>
